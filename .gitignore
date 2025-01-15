@@ -12,12 +12,12 @@ $RECYCLE.BIN/
 *.log
 log.txt
 
-
+# Sourcemaps and versioning
 /.sourcemaps
 /.versions
 /coverage
 
-# Ionic
+# Ionic and Cordova specific directories
 /.ionic
 /www
 /platforms
@@ -29,7 +29,7 @@ log.txt
 /out-tsc
 /bazel-out
 
-# Node
+# Node.js dependencies and build logs
 /node_modules
 npm-debug.log
 yarn-error.log
@@ -52,15 +52,13 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
-
-# Miscellaneous
+# Miscellaneous directories/files
 /.angular
 /.angular/cache
 .sass-cache/
 /.nx
 /.nx/cache
 /connect.lock
-/coverage
 /libpeerconnection.log
 testem.log
 /typings
