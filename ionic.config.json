@@ -1,0 +1,7 @@
+{
+  "name": "SyncSceneIonic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
