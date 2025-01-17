@@ -1,0 +1,12 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>user</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-button size="large" (click)="toggleRegisterComponent()">Register</ion-button>
+
+
+  <app-user-register *ngIf="showRegisterComponent"></app-user-register>
+</ion-content>

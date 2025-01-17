@@ -1,0 +1,5 @@
+:host ion-content {
+  --padding-bottom: 200px; /* Ensure there's space above the tab bar */
+}
+
+/*# sourceMappingURL=register.component.css.map */
