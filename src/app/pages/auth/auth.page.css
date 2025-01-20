@@ -1,0 +1,22 @@
+.auth-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.error-message {
+  color: var(--ion-color-danger);
+  font-size: 0.8rem;
+  margin: -0.5rem 0 1rem 1rem;
+}
+
+ion-modal {
+  --height: auto;
+  --width: min(90vw, 350px);
+}
+
+ion-datetime {
+  min-height: 400px;
+}
+
+/*# sourceMappingURL=auth.page.css.map */

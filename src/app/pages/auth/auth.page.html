@@ -1,0 +1,104 @@
+<ion-content class="ion-padding">
+  <div class="auth-container">
+    <ion-segment [(ngModel)]="currentForm" class="ion-margin-bottom">
+      <ion-segment-button value="login">
+        <ion-label>Login</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="register">
+        <ion-label>Register</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- Login Form -->
+    <form [formGroup]="authService.loginForm" (ngSubmit)="onLogin()" *ngIf="currentForm === 'login'">
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" formControlName="email"></ion-input>
+      </ion-item>
+      <div class="error-message"
+           *ngIf="authService.loginForm.get('email')?.touched &&
+                  authService.loginForm.get('email')?.errors?.['required']">
+        Email is required
+      </div>
+
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">Password</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <div class="error-message"
+           *ngIf="authService.loginForm.get('password')?.touched &&
+                  authService.loginForm.get('password')?.errors?.['required']">
+        Password is required
+      </div>
+
+      <ion-button expand="block" type="submit" [disabled]="!authService.loginForm.valid">
+        Login
+      </ion-button>
+    </form>
+
+    <!-- Register Form -->
+    <form [formGroup]="authService.registerForm" (ngSubmit)="onRegister()" *ngIf="currentForm === 'register'">
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">Username</ion-label>
+        <ion-input type="text" formControlName="username"></ion-input>
+      </ion-item>
+
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" formControlName="email"></ion-input>
+      </ion-item>
+
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">Password</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">Confirm Password</ion-label>
+        <ion-input type="password" formControlName="passwordConfirmation"></ion-input>
+      </ion-item>
+
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">Phone Number</ion-label>
+        <ion-input type="tel" formControlName="phoneNumber"></ion-input>
+      </ion-item>
+
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="floating">Birth Date</ion-label>
+        <ion-input readonly (click)="presentDatePicker()" [value]="formatDate(authService.registerForm.get('birthDate')?.value)" placeholder="Select Date"></ion-input>
+      </ion-item>
+
+      <ion-modal [isOpen]="datePickerOpen">
+        <ng-template>
+          <ion-datetime
+            #datetime
+            presentation="date"
+            [showDefaultButtons]="true"
+            (ionChange)="dateChanged($event)"
+            (ionCancel)="dismissDatePicker()"
+            [preferWheel]="true"
+            locale="en-GB"
+            timezone="UTC">
+            <ion-buttons slot="buttons">
+              <ion-button color="danger" (click)="dismissDatePicker()">Cancel</ion-button>
+              <ion-button color="primary" (click)="confirmDate()">Confirm</ion-button>
+            </ion-buttons>
+          </ion-datetime>
+        </ng-template>
+      </ion-modal>
+
+      <ion-item class="ion-margin-bottom">
+        <ion-label>Gender</ion-label>
+        <ion-select formControlName="gender">
+          <ion-select-option [value]="Gender.Male">Male</ion-select-option>
+          <ion-select-option [value]="Gender.Female">Female</ion-select-option>
+          <ion-select-option [value]="Gender.Other">Other</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-button expand="block" type="submit" [disabled]="!authService.registerForm.valid">
+        Register
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

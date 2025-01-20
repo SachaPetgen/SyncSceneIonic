@@ -10,12 +10,13 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/events/events.page').then( m => m.EventsPage)
   },
   {
-    path: 'user',
-    loadComponent: () => import('./pages/user/user.page').then( m => m.UserPage)
-  },
-  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',
+  },
+  {
+    path: 'auth',
+    loadComponent: () => import('./pages/auth/auth.page').then( m => m.AuthPage)
   }
+
 ];
