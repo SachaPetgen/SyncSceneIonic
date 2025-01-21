@@ -1,9 +1,14 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import { IonicModule, IonDatetime } from '@ionic/angular';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../services/auth.service';
 import {Gender} from "../../models/User/User";
+import {UserLoginDTO} from "../../models/User/DTO/UserLoginDTO";
+import {catchError, Observable, tap, throwError} from "rxjs";
+import {UserRegisterDTO} from "../../models/User/DTO/UserRegisterDTO";
+import {UserService} from "../../services/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-auth',
@@ -13,12 +18,102 @@ import {Gender} from "../../models/User/User";
   imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule]
 })
 export class AuthPage {
+
   @ViewChild(IonDatetime) datetime!: IonDatetime;
+
+  loginForm: FormGroup;
+  registerForm: FormGroup;
+
   currentForm: 'login' | 'register' = 'login';
   Gender = Gender;
   datePickerOpen = false;
 
-  constructor(public authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly userService : UserService,
+              private fb: FormBuilder, private readonly router: Router) {
+    this.loginForm = this.fb.group({
+      identifier: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+
+    this.registerForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      passwordConfirmation: ['', [Validators.required]],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      birthDate: ['', Validators.required],
+      gender: ['', Validators.required]
+    }, {
+      validators: this.passwordMatchValidator
+    });
+  }
+
+  onLogin(): void {
+    if (this.loginForm.valid) {
+
+      const loginData: UserLoginDTO = this.loginForm.value;
+      const loginObservable: Observable<any> = this.userService.login(loginData);
+
+      loginObservable.pipe(
+        tap({
+          next: (response) => {
+            console.log('User logged successfully:', response.token);
+            this.authService.setToken(response.token).then(
+              () => {
+                this.router.navigate(['/account']);
+              }
+            );
+            this.authService.debugStorage();
+          },
+          complete: () => {
+            console.log('Login process completed');
+          }
+        }),
+        catchError((error) => {
+          console.error('Login failed:', error);
+          return throwError(() => error);
+        })
+      ).subscribe();
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+
+  onRegister(): void {
+    if (this.registerForm.valid) {
+
+      const registrationData: UserRegisterDTO = this.registerForm.value;
+      const registrationObservable: Observable<any> = this.userService.register(registrationData);
+
+      registrationObservable.pipe(
+        tap({
+          next: (response) => {
+            console.log('User registered successfully:', response);
+            this.authService.setToken(response.token).then(
+              () => {
+                this.router.navigate(['/account']);
+              }
+            );
+          },
+          complete: () => {
+            console.log('Registration process completed');
+          }
+        }),
+        catchError((error) => {
+          console.error('Registration failed:', error);
+          return throwError(() => error);
+        })
+      ).subscribe();
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+
+  private passwordMatchValidator(g: FormGroup) {
+    return g.get('password')?.value === g.get('passwordConfirmation')?.value
+      ? null
+      : { mismatch: true };
+  }
 
   presentDatePicker() {
     this.datePickerOpen = true;
@@ -40,10 +135,11 @@ export class AuthPage {
         date.getDate()
       ));
 
-      this.authService.registerForm.patchValue({
+      this.registerForm.patchValue({
         birthDate: utcDate.toISOString()
       });
     }
+
     this.dismissDatePicker();
   }
 
@@ -58,19 +154,5 @@ export class AuthPage {
     return `${date.getUTCDate().toString().padStart(2, '0')}/${
       (date.getUTCMonth() + 1).toString().padStart(2, '0')}/${
       date.getUTCFullYear()}`;
-  }
-
-  onLogin(): void {
-    if (this.authService.loginForm.valid) {
-      console.log('Login form submitted', this.authService.loginForm.value);
-      this.authService.login();
-    }
-  }
-
-  onRegister(): void {
-    if (this.authService.registerForm.valid) {
-      console.log('Register form submitted', this.authService.registerForm.value);
-      this.authService.register(this.authService.registerForm);
-    }
   }
 }

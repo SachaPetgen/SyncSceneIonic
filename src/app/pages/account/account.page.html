@@ -1,0 +1,70 @@
+<!-- account.page.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <!-- Profile Section -->
+    <ion-item-group>
+      <ion-item-divider>
+        <ion-label>Profile</ion-label>
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label position="stacked">Username</ion-label>
+        <ion-input [(ngModel)]="user.username" readonly></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input [(ngModel)]="user.email" type="email"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Phone number</ion-label>
+        <ion-input [(ngModel)]="user.phoneNumber"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Gender</ion-label>
+        <ion-input [(ngModel)]="user.gender"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Role</ion-label>
+        <ion-input [(ngModel)]="user.role"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Birth Date</ion-label>
+        <ion-input [(ngModel)]="user.birthDate"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" class="ion-margin">
+        Update Profile
+      </ion-button>
+    </ion-item-group>
+
+    <!-- Security Section -->
+    <ion-item-group>
+      <ion-item-divider>
+        <ion-label>Security</ion-label>
+      </ion-item-divider>
+
+      <ion-button expand="block" class="ion-margin" color="warning">
+        Change Password
+      </ion-button>
+    </ion-item-group>
+  </ion-list>
+
+  <!-- Logout Button -->
+  <ion-button expand="block" (click)="logout()" color="danger" class="ion-margin-top">
+    Logout
+  </ion-button>
+</ion-content>

@@ -10,16 +10,21 @@ import {
 } from '@ionic/angular/standalone';
 import {RouterLink} from "@angular/router";
 import {addIcons} from "ionicons";
-import {homeOutline, musicalNotesOutline, peopleOutline} from "ionicons/icons";
+import {homeOutline, musicalNotesOutline, peopleOutline, people} from "ionicons/icons";
+import {AuthService} from "./services/auth.service";
+import {AsyncPipe} from "@angular/common";
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, RouterLink],
+  imports: [IonApp, IonRouterOutlet, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, RouterLink, AsyncPipe],
 })
 export class AppComponent {
-  constructor() {
-    addIcons({ homeOutline, musicalNotesOutline, peopleOutline });
+
+  isLoggedIn$ = this.authService.isAuthenticated();
+
+  constructor(protected readonly authService : AuthService) {
+    addIcons({ homeOutline, musicalNotesOutline, peopleOutline, people});
 
   }
 }

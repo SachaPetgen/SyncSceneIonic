@@ -10,10 +10,18 @@
         <ion-icon name="musical-notes-outline"></ion-icon>
         <ion-label>Events</ion-label>
       </ion-tab-button>
-      <ion-tab-button routerLink="/auth">
-        <ion-icon name="people-outline"></ion-icon>
-        <ion-label>Login</ion-label>
-      </ion-tab-button>
+
+      @if (isLoggedIn$ | async){
+        <ion-tab-button routerLink="/account">
+          <ion-icon name="people"></ion-icon>
+          <ion-label>Account</ion-label>
+        </ion-tab-button>
+      } @else {
+        <ion-tab-button routerLink="/auth">
+          <ion-icon name="people-outline"></ion-icon>
+          <ion-label>Login</ion-label>
+        </ion-tab-button>
+      }
     </ion-tab-bar>
   </ion-tabs>
 </ion-app>
