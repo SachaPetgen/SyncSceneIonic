@@ -23,4 +23,8 @@ export class UserService extends ApiService{
   public login(dto: UserLoginDTO) : Observable<UserDetailsDTO>{
     return this.HttpClient.post<UserDetailsDTO>(this.route + "/login", dto);
   }
+
+  public getById(id: string) : Observable<UserDetailsDTO>{
+    return this.HttpClient.get<UserDetailsDTO>(this.route + "/" + id);
+  }
 }

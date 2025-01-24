@@ -12,43 +12,46 @@
   <ion-list>
     <!-- Profile Section -->
     <ion-item-group>
-      <ion-item-divider>
-        <ion-label>Profile</ion-label>
-      </ion-item-divider>
+      @if(user$ | async; as user){
 
-      <ion-item>
-        <ion-label position="stacked">Username</ion-label>
-        <ion-input [(ngModel)]="user.username" readonly></ion-input>
-      </ion-item>
+        <ion-item-divider>
+          <ion-label>Profile</ion-label>
+        </ion-item-divider>
 
-      <ion-item>
-        <ion-label position="stacked">Email</ion-label>
-        <ion-input [(ngModel)]="user.email" type="email"></ion-input>
-      </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Username</ion-label>
+          <ion-input [(ngModel)]="user.username" readonly></ion-input>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Phone number</ion-label>
-        <ion-input [(ngModel)]="user.phoneNumber"></ion-input>
-      </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Email</ion-label>
+          <ion-input [(ngModel)]="user.email" type="email"></ion-input>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Gender</ion-label>
-        <ion-input [(ngModel)]="user.gender"></ion-input>
-      </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Phone number</ion-label>
+          <ion-input [(ngModel)]="user.phoneNumber"></ion-input>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Role</ion-label>
-        <ion-input [(ngModel)]="user.role"></ion-input>
-      </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Gender</ion-label>
+          <ion-input [(ngModel)]="Gender[user.gender]"></ion-input>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Birth Date</ion-label>
-        <ion-input [(ngModel)]="user.birthDate"></ion-input>
-      </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Role</ion-label>
+          <ion-input [(ngModel)]="Role[user.role]"></ion-input>
+        </ion-item>
 
-      <ion-button expand="block" class="ion-margin">
-        Update Profile
-      </ion-button>
+        <ion-item>
+          <ion-label position="stacked">Birth Date</ion-label>
+          <ion-input [(ngModel)]="formatedDateString"></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" class="ion-margin">
+          Update Profile
+        </ion-button>
+      }
     </ion-item-group>
 
     <!-- Security Section -->

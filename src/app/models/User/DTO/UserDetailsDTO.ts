@@ -2,6 +2,7 @@
 
 export interface UserDetailsDTO{
 
+  id: string,
   username: string,
   email: string,
   role: Role

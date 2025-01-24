@@ -30,6 +30,7 @@ export class AuthPage {
 
   constructor(private readonly authService: AuthService, private readonly userService : UserService,
               private fb: FormBuilder, private readonly router: Router) {
+
     this.loginForm = this.fb.group({
       identifier: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -60,7 +61,9 @@ export class AuthPage {
             console.log('User logged successfully:', response.token);
             this.authService.setToken(response.token).then(
               () => {
+                console.log('Before navigating to account page');
                 this.router.navigate(['/account']);
+                console.log('After navigating to account page');
               }
             );
             this.authService.debugStorage();

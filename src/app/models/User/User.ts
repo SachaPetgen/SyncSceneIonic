@@ -1,13 +1,13 @@
 ﻿
 export enum Role{
-  User = "User",
-  Admin = "Admin"
+  User,
+  Admin
 }
 
 export enum Gender {
-  Male = "Male",
-  Female = "Female",
-  Other = "Other"
+  Male,
+  Female ,
+  Other
 }
 
 export interface User{
