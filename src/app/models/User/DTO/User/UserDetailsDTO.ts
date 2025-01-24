@@ -1,4 +1,4 @@
-﻿import {Gender, Role} from "../User";
+﻿import {Gender, Role} from "../../User";
 
 export interface UserDetailsDTO{
 

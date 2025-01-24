@@ -4,9 +4,9 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import { IonicModule, IonDatetime } from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
 import {Gender} from "../../models/User/User";
-import {UserLoginDTO} from "../../models/User/DTO/UserLoginDTO";
+import {UserLoginDTO} from "../../models/User/DTO/User/UserLoginDTO";
 import {catchError, Observable, tap, throwError} from "rxjs";
-import {UserRegisterDTO} from "../../models/User/DTO/UserRegisterDTO";
+import {UserRegisterDTO} from "../../models/User/DTO/User/UserRegisterDTO";
 import {UserService} from "../../services/user.service";
 import {Router} from "@angular/router";
 
@@ -61,15 +61,9 @@ export class AuthPage {
             console.log('User logged successfully:', response.token);
             this.authService.setToken(response.token).then(
               () => {
-                console.log('Before navigating to account page');
                 this.router.navigate(['/account']);
-                console.log('After navigating to account page');
               }
             );
-            this.authService.debugStorage();
-          },
-          complete: () => {
-            console.log('Login process completed');
           }
         }),
         catchError((error) => {
@@ -78,7 +72,7 @@ export class AuthPage {
         })
       ).subscribe();
     } else {
-      console.log('Form is invalid');
+      console.log('Login form is not valid');
     }
   }
 
@@ -97,9 +91,6 @@ export class AuthPage {
                 this.router.navigate(['/account']);
               }
             );
-          },
-          complete: () => {
-            console.log('Registration process completed');
           }
         }),
         catchError((error) => {
@@ -108,7 +99,7 @@ export class AuthPage {
         })
       ).subscribe();
     } else {
-      console.log('Form is invalid');
+      console.log('Register form is not valid');
     }
   }
 

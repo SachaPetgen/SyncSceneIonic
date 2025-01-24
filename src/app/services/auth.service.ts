@@ -1,10 +1,9 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 
-import {BehaviorSubject, Observable, from, tap, map, firstValueFrom} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {JwtHelperService} from "@auth0/angular-jwt";
-import {UserTokenDTO} from "../models/User/DTO/UserTokenDTO";
 
 interface DecodedToken {
   id: string;
@@ -36,7 +35,7 @@ export class AuthService {
     this.token.subscribe(async token => {
       console.log('Token changed:', token);
       if (token) {
-        this.currentUser.next(this.getUserTokenDTOFromToken(token));
+        this.currentUser.next(this.getUserDecodedToken(token));
         console.log(this.currentUser.value);
       }
     });
@@ -102,7 +101,7 @@ export class AuthService {
     }
   }
 
-  getUserTokenDTOFromToken(token: string): DecodedToken | null {
+  getUserDecodedToken(token: string): DecodedToken | null {
     const decodedToken = this.decodeToken(token);
 
     console.log(decodedToken);

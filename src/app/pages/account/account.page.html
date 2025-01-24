@@ -11,48 +11,45 @@
 <ion-content class="ion-padding">
   <ion-list>
     <!-- Profile Section -->
-    <ion-item-group>
-      @if(user$ | async; as user){
+    @if(user$ | async; as user){
 
-        <ion-item-divider>
-          <ion-label>Profile</ion-label>
-        </ion-item-divider>
+    <form [formGroup]="updateForm" (ngSubmit)="onUpdate()">
 
         <ion-item>
           <ion-label position="stacked">Username</ion-label>
-          <ion-input [(ngModel)]="user.username" readonly></ion-input>
+          <ion-input formControlName="username"></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Email</ion-label>
-          <ion-input [(ngModel)]="user.email" type="email"></ion-input>
+          <ion-input formControlName="email" type="email"></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Phone number</ion-label>
-          <ion-input [(ngModel)]="user.phoneNumber"></ion-input>
+          <ion-input formControlName="phoneNumber"></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Gender</ion-label>
-          <ion-input [(ngModel)]="Gender[user.gender]"></ion-input>
+          <ion-input formControlName="gender"></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Role</ion-label>
-          <ion-input [(ngModel)]="Role[user.role]"></ion-input>
+          <ion-input formControlName="role"></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Birth Date</ion-label>
-          <ion-input [(ngModel)]="formatedDateString"></ion-input>
+          <ion-input formControlName="birthDate"></ion-input>
         </ion-item>
 
         <ion-button expand="block" class="ion-margin">
           Update Profile
         </ion-button>
-      }
-    </ion-item-group>
+    </form>
+    }
 
     <!-- Security Section -->
     <ion-item-group>

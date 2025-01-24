@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule, DatePipe} from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {
   IonBackButton, IonButton,
   IonButtons,
@@ -12,11 +12,12 @@ import {
 } from '@ionic/angular/standalone';
 import {AlertController, ToastController} from "@ionic/angular";
 import {AuthService} from "../../services/auth.service";
-import {UserDetailsDTO} from "../../models/User/DTO/UserDetailsDTO";
+import {UserDetailsDTO} from "../../models/User/DTO/User/UserDetailsDTO";
 import {Router} from "@angular/router";
 import {UserService} from "../../services/user.service";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, catchError, Observable, tap, throwError} from "rxjs";
 import {Gender, Role} from 'src/app/models/User/User';
+import {UserUpdateDTO} from "../../models/User/DTO/User/UserUpdateDTO";
 
 @Component({
   selector: 'app-account',
@@ -37,11 +38,16 @@ import {Gender, Role} from 'src/app/models/User/User';
     IonLabel,
     IonItem,
     IonInput,
-    IonButton],
+    IonButton, ReactiveFormsModule],
   providers: [DatePipe]
 })
 
 export class AccountPage implements OnInit {
+
+  updateForm: FormGroup;
+
+  readonly Role = Role;
+  readonly Gender = Gender;
 
   user: BehaviorSubject<UserDetailsDTO | null> = new BehaviorSubject<UserDetailsDTO | null>(null);
   user$ : Observable<UserDetailsDTO | null> = this.user.asObservable();
@@ -50,25 +56,43 @@ export class AccountPage implements OnInit {
 
   constructor(private readonly toastController : ToastController, private readonly alertController : AlertController,
               private readonly authService : AuthService, private readonly router : Router,
-              private readonly userService : UserService, private datePipe: DatePipe) { }
+              private readonly userService : UserService, private datePipe: DatePipe,
+              private readonly fb: FormBuilder) {
+
+    this.updateForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      gender: [{value: '', disabled: true}],
+      role: [{value: '', disabled: true}],
+      birthDate: [{value: '', disabled: true}]
+    });
+  }
 
   ngOnInit() {
     this.loadUserData();
+
+    // Populate form with user data
+
+
   }
 
   ionViewWillEnter(){
-
-    console.log(this.authService.currentUser);
     this.loadUserData();
   }
 
   loadUserData() {
     if(this.authService.currentUser.value) {
-      console.log(this.authService.currentUser.value);
       this.userService.getById(this.authService.currentUser.value.id).subscribe((user) =>{
-        console.log(user);
         this.user.next(user);
-        this.formatedDateString = this.datePipe.transform(user.birthDate, 'dd MMMM yyyy') || '';
+        this.updateForm.patchValue({
+          username: user.username,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          gender: Gender[user.gender],
+          role: Role[user.role],
+          birthDate: this.datePipe.transform(user.birthDate, 'dd MMMM yyyy') || '',
+        });
       });
     }
   }
@@ -91,7 +115,32 @@ export class AccountPage implements OnInit {
         }
       ]
     });
-    alert.present().then(() => console.log('Alert presented'));
+
+    await alert.present();
+  }
+
+  onUpdate(){
+
+    if(this.updateForm.valid){
+
+      const updateData : UserUpdateDTO = this.updateForm.value;
+      const updateDataObservable: Observable<any> = this.userService.update(updateData, this.authService.currentUser.value?.id!);
+
+      updateDataObservable.pipe(
+        tap({
+          next: (response) => {
+            console.log('User updated successfully', response.data);
+          }
+        }),
+        catchError((error) => {
+            console.error('Update failed:', error);
+            return throwError(() => error);
+        })
+      ).subscribe();
+    }
+    else{
+      console.log('Update form is not valid')
+    }
   }
 
   async presentToast(message: string, color: string) {
@@ -103,7 +152,4 @@ export class AccountPage implements OnInit {
     });
     toast.present().then(() => console.log('Toast presented'));
   }
-
-  protected readonly Gender = Gender;
-  protected readonly Role = Role;
 }
