@@ -57,9 +57,28 @@
         <ion-label>Security</ion-label>
       </ion-item-divider>
 
-      <ion-button expand="block" class="ion-margin" color="warning">
-        Change Password
-      </ion-button>
+
+      <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
+
+        <ion-item>
+          <ion-label position="stacked">Old password</ion-label>
+          <ion-input formControlName="oldPassword" type="password" ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">New password</ion-label>
+          <ion-input formControlName="newPassword" type="password"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">New password confirmation</ion-label>
+          <ion-input formControlName="newPasswordConfirmation" type="password"></ion-input>
+        </ion-item>
+
+        <ion-button type="submit" expand="block" class="ion-margin" color="warning">
+          Change Password
+        </ion-button>
+      </form>
     </ion-item-group>
   </ion-list>
 

@@ -45,6 +45,7 @@ import {UserUpdateDTO} from "../../models/User/DTO/User/UserUpdateDTO";
 export class AccountPage implements OnInit {
 
   updateForm: FormGroup;
+  changePasswordForm: FormGroup;
 
   readonly Role = Role;
   readonly Gender = Gender;
@@ -67,7 +68,17 @@ export class AccountPage implements OnInit {
       role: [{value: '', disabled: true}],
       birthDate: [{value: '', disabled: true}]
     });
+
+    this.changePasswordForm = this.fb.group({
+      oldPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      newPasswordConfirmation: ['', Validators.required]
+    }
+    ,{
+      validators: this.passwordMatchValidator
+    });
   }
+
 
   ngOnInit() {
     this.loadUserData();
@@ -133,10 +144,12 @@ export class AccountPage implements OnInit {
         tap({
           next: (response) => {
             console.log('User updated successfully', response.data);
+            this.presentToast('Update done', 'success');
           }
         }),
         catchError((error) => {
             console.error('Update failed:', error);
+            this.presentToast('Update failed', 'danger');
             return throwError(() => error);
         })
       ).subscribe();
@@ -144,6 +157,38 @@ export class AccountPage implements OnInit {
     else{
       console.log('Update form is not valid')
     }
+  }
+
+  onChangePassword() {
+    console.log('Change password form:', this.changePasswordForm.value);
+
+    if(this.changePasswordForm.valid) {
+      const changePasswordData = this.changePasswordForm.value;
+      const changePasswordObservable: Observable<any> = this.userService.patchPassword(changePasswordData, this.authService.currentUser.value?.id!);
+
+      changePasswordObservable.pipe(
+        tap({
+          next: (response) => {
+            console.log('Password changed successfully:', response);
+            this.presentToast('Password changed successfully', 'success');
+            this.changePasswordForm.reset();
+          }
+        }),
+        catchError((error) => {
+          console.error('Password change failed:', error);
+          this.presentToast('Password change failed', 'danger');
+          return throwError(() => error);
+        })
+      ).subscribe();
+    } else {
+      console.log('Change password form is not valid');
+    }
+  }
+
+  private passwordMatchValidator(g: FormGroup) {
+    return g.get('newPassword')?.value === g.get('newPasswordConfirmation')?.value
+      ? null
+      : { mismatch: true };
   }
 
   async presentToast(message: string, color: string) {

@@ -6,6 +6,7 @@ import {UserRegisterDTO} from "../models/User/DTO/User/UserRegisterDTO";
 import {UserDetailsDTO} from "../models/User/DTO/User/UserDetailsDTO";
 import {UserLoginDTO} from "../models/User/DTO/User/UserLoginDTO";
 import {UserUpdateDTO} from "../models/User/DTO/User/UserUpdateDTO";
+import {UserPatchPasswordDTO} from "../models/User/DTO/User/UserPatchPasswordDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -29,8 +30,12 @@ export class UserService extends ApiService{
     return this.HttpClient.post<UserDetailsDTO>(this.route + "/login", dto);
   }
 
-  public update(dto: UserUpdateDTO, id: string) : Observable<UserUpdateDTO>{
-    return this.HttpClient.put<UserUpdateDTO>(this.route + "/" + id, dto);
+  public update(dto: UserUpdateDTO, id: string) : Observable<UserDetailsDTO>{
+    return this.HttpClient.put<UserDetailsDTO>(this.route + "/" + id, dto);
+  }
+
+  public patchPassword(dto: UserPatchPasswordDTO, id: string) : Observable<UserDetailsDTO> {
+    return this.HttpClient.patch<UserDetailsDTO>(this.route + "/changePassword/" + id, dto);
   }
 
 }
