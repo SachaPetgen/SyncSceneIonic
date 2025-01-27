@@ -30,7 +30,7 @@ export class UserService extends ApiService{
   }
 
   public update(dto: UserUpdateDTO, id: string) : Observable<UserUpdateDTO>{
-    return this.HttpClient.put<UserUpdateDTO>(this.route + "/update/" + id, dto);
+    return this.HttpClient.put<UserUpdateDTO>(this.route + "/" + id, dto);
   }
 
 }

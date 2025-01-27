@@ -121,6 +121,9 @@ export class AccountPage implements OnInit {
 
   onUpdate(){
 
+
+    console.log('Update form:', this.updateForm.value);
+
     if(this.updateForm.valid){
 
       const updateData : UserUpdateDTO = this.updateForm.value;
