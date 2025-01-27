@@ -3,10 +3,10 @@ import {CommonModule, DatePipe} from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {
   IonBackButton, IonButton,
-  IonButtons,
+  IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonContent,
-  IonHeader, IonInput, IonItem, IonItemDivider, IonItemGroup, IonLabel,
-  IonList,
+  IonHeader, IonIcon, IonInput, IonItem, IonLabel,
+  IonList, IonNote, IonText,
   IonTitle,
   IonToolbar
 } from '@ionic/angular/standalone';
@@ -18,6 +18,14 @@ import {UserService} from "../../services/user.service";
 import {BehaviorSubject, catchError, Observable, tap, throwError} from "rxjs";
 import {Gender, Role} from 'src/app/models/User/User';
 import {UserUpdateDTO} from "../../models/User/DTO/User/UserUpdateDTO";
+import {addIcons} from "ionicons";
+import {
+  briefcaseOutline, calendarOutline,
+  callOutline, checkmarkOutline,
+  keyOutline, lockClosedOutline, logOutOutline,
+  mailOutline,
+  personOutline, saveOutline, shieldCheckmarkOutline
+} from "ionicons/icons";
 
 @Component({
   selector: 'app-account',
@@ -33,19 +41,17 @@ import {UserUpdateDTO} from "../../models/User/DTO/User/UserUpdateDTO";
     IonButtons,
     IonBackButton,
     IonList,
-    IonItemGroup,
-    IonItemDivider,
     IonLabel,
     IonItem,
     IonInput,
-    IonButton, ReactiveFormsModule],
+    IonButton, ReactiveFormsModule, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, IonText],
   providers: [DatePipe]
 })
 
 export class AccountPage implements OnInit {
 
-  updateForm: FormGroup;
-  changePasswordForm: FormGroup;
+  public updateForm: FormGroup;
+  public changePasswordForm: FormGroup;
 
   readonly Role = Role;
   readonly Gender = Gender;
@@ -60,6 +66,8 @@ export class AccountPage implements OnInit {
               private readonly userService : UserService, private datePipe: DatePipe,
               private readonly fb: FormBuilder) {
 
+    addIcons({personOutline, mailOutline, callOutline, briefcaseOutline, calendarOutline, saveOutline, lockClosedOutline, keyOutline, checkmarkOutline, shieldCheckmarkOutline, logOutOutline });
+
     this.updateForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -71,7 +79,7 @@ export class AccountPage implements OnInit {
 
     this.changePasswordForm = this.fb.group({
       oldPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      newPassword: ['', [Validators.required, Validators.minLength(8)]],
       newPasswordConfirmation: ['', Validators.required]
     }
     ,{
@@ -119,9 +127,15 @@ export class AccountPage implements OnInit {
         },
         {
           text: 'Yes, Logout',
-          handler: () => {
-            this.authService.logout();
-            this.router.navigate(['/auth']);
+          handler: async () => {
+            try {
+              await this.authService.logout();
+              console.log('Logout successful, navigating to auth');
+              await this.router.navigate(['/auth']);
+            } catch (error) {
+              console.error('Error during logout:', error);
+            }
+            return true; // Important to return true to close the alert
           }
         }
       ]
@@ -185,10 +199,36 @@ export class AccountPage implements OnInit {
     }
   }
 
-  private passwordMatchValidator(g: FormGroup) {
-    return g.get('newPassword')?.value === g.get('newPasswordConfirmation')?.value
-      ? null
-      : { mismatch: true };
+  private passwordMatchValidator(group: FormGroup): { [key: string]: any } | null {
+    const newPassword = group.get('newPassword');
+    const confirmPassword = group.get('newPasswordConfirmation');
+
+    if (!newPassword || !confirmPassword) return null;
+
+    if (newPassword.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ mismatch: true });
+      return { mismatch: true };
+    }
+
+    const errors = confirmPassword.errors;
+    if (errors) {
+      delete errors['mismatch'];
+      if (Object.keys(errors).length === 0) {
+        confirmPassword.setErrors(null);
+      } else {
+        confirmPassword.setErrors(errors);
+      }
+    }
+
+    return null;
+  }
+
+  get isUpdateFormPristine(): boolean {
+    return this.updateForm.pristine;
+  }
+
+  get isPasswordFormPristine(): boolean {
+    return this.changePasswordForm.pristine;
   }
 
   async presentToast(message: string, color: string) {

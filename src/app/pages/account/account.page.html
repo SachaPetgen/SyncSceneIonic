@@ -4,86 +4,143 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Account</ion-title>
+    <ion-title>My Account</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-list>
+  @if(user$ | async; as user){
+
     <!-- Profile Section -->
-    @if(user$ | async; as user){
-
     <form [formGroup]="updateForm" (ngSubmit)="onUpdate()">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Personal Information</ion-card-title>
+        </ion-card-header>
 
-        <ion-item>
-          <ion-label position="stacked">Username</ion-label>
-          <ion-input formControlName="username"></ion-input>
-        </ion-item>
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-icon name="person-outline" slot="start"></ion-icon>
+              <ion-label position="stacked">Username</ion-label>
+              <ion-input formControlName="username" placeholder="Enter username"></ion-input>
+              <div class="error-container">
+                @if(updateForm.get('username')?.hasError('required') && updateForm.get('username')?.touched) {
+                  <ion-text color="danger" class="error-message">
+                    <small>Username is required</small>
+                  </ion-text>
+                }
+              </div>
+            </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Email</ion-label>
-          <ion-input formControlName="email" type="email"></ion-input>
-        </ion-item>
+            <ion-item>
+              <ion-icon name="mail-outline" slot="start"></ion-icon>
+              <ion-label position="stacked">Email</ion-label>
+              <ion-input formControlName="email" type="email" placeholder="Enter email"></ion-input>
+              <div class="error-container">
+                @if(updateForm.get('email')?.hasError('email') && updateForm.get('email')?.touched) {
+                  <ion-text color="danger" class="error-message">
+                    <small>Please enter a valid email</small>
+                  </ion-text>
+                }
+              </div>
+            </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Phone number</ion-label>
-          <ion-input formControlName="phoneNumber"></ion-input>
-        </ion-item>
+            <ion-item>
+              <ion-icon name="call-outline" slot="start"></ion-icon>
+              <ion-label position="stacked">Phone number</ion-label>
+              <ion-input formControlName="phoneNumber" type="tel" placeholder="Enter phone number"></ion-input>
+            </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Gender</ion-label>
-          <ion-input formControlName="gender"></ion-input>
-        </ion-item>
+            <ion-item>
+              <ion-icon name="people-outline" slot="start"></ion-icon>
+              <ion-label position="stacked">Gender</ion-label>
+              <ion-input formControlName="gender" readonly></ion-input>
+            </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Role</ion-label>
-          <ion-input formControlName="role"></ion-input>
-        </ion-item>
+            <ion-item>
+              <ion-icon name="briefcase-outline" slot="start"></ion-icon>
+              <ion-label position="stacked">Role</ion-label>
+              <ion-input formControlName="role" readonly></ion-input>
+            </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Birth Date</ion-label>
-          <ion-input formControlName="birthDate"></ion-input>
-        </ion-item>
+            <ion-item>
+              <ion-icon name="calendar-outline" slot="start"></ion-icon>
+              <ion-label position="stacked">Birth Date</ion-label>
+              <ion-input formControlName="birthDate" readonly></ion-input>
+            </ion-item>
+          </ion-list>
 
-        <ion-button type="submit" expand="block" class="ion-margin">
-          Update Profile
-        </ion-button>
+          <ion-button type="submit" expand="block" class="ion-margin" [disabled]="!updateForm.valid || isUpdateFormPristine">
+            <ion-icon name="save-outline" slot="start"></ion-icon>
+            Save Changes
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
     </form>
-    }
 
     <!-- Security Section -->
-    <ion-item-group>
-      <ion-item-divider>
-        <ion-label>Security</ion-label>
-      </ion-item-divider>
+    <ion-card class="ion-margin-top">
+      <ion-card-header>
+        <ion-card-title>Security Settings</ion-card-title>
+      </ion-card-header>
 
+      <ion-card-content>
+        <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
+          <ion-list>
+            <ion-item>
+              <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+              <ion-label position="stacked">Current Password</ion-label>
+              <ion-input formControlName="oldPassword" type="password" placeholder="Enter current password"></ion-input>
+              <div class="error-container">
+                @if(changePasswordForm.get('oldPassword')?.hasError('required') && changePasswordForm.get('oldPassword')?.touched) {
+                  <ion-text color="danger" class="error-message">
+                    <small>Current password is required</small>
+                  </ion-text>
+                }
+              </div>
+            </ion-item>
 
-      <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
+            <ion-item>
+              <ion-icon name="key-outline" slot="start"></ion-icon>
+              <ion-label position="stacked">New Password</ion-label>
+              <ion-input formControlName="newPassword" type="password" placeholder="Enter new password"></ion-input>
+              <div class="error-container">
+                @if(changePasswordForm.get('newPassword')?.hasError('minlength')) {
+                  <ion-text color="danger" class="error-message">
+                    <small>Password must be at least 8 characters</small>
+                  </ion-text>
+                }
+              </div>
+            </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Old password</ion-label>
-          <ion-input formControlName="oldPassword" type="password" ></ion-input>
-        </ion-item>
+            <ion-item>
+              <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+              <ion-label position="stacked">Confirm New Password</ion-label>
+              <ion-input formControlName="newPasswordConfirmation" type="password" placeholder="Confirm new password"></ion-input>
+              <div class="error-container">
+                @if(changePasswordForm.get('newPasswordConfirmation')?.hasError('mismatch')) {
+                  <ion-text color="danger" class="error-message">
+                    <small>Passwords do not match</small>
+                  </ion-text>
+                }
+              </div>
+            </ion-item>
+          </ion-list>
 
-        <ion-item>
-          <ion-label position="stacked">New password</ion-label>
-          <ion-input formControlName="newPassword" type="password"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">New password confirmation</ion-label>
-          <ion-input formControlName="newPasswordConfirmation" type="password"></ion-input>
-        </ion-item>
-
-        <ion-button type="submit" expand="block" class="ion-margin" color="warning">
-          Change Password
-        </ion-button>
-      </form>
-    </ion-item-group>
-  </ion-list>
+          <ion-button type="submit" expand="block" class="ion-margin" color="warning"
+                      [disabled]="!changePasswordForm.valid || isPasswordFormPristine">
+            <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+            Update Password
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  }
 
   <!-- Logout Button -->
   <ion-button expand="block" (click)="logout()" color="danger" class="ion-margin-top">
+    <ion-icon name="log-out-outline" slot="start"></ion-icon>
     Logout
   </ion-button>
 </ion-content>

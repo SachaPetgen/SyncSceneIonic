@@ -86,6 +86,7 @@ export class AuthService {
   async logout() {
     await this.removeToken();
     await Preferences.remove({ key: this.USER_KEY });
+    return true;
   }
 
   decodeToken(token: string) : DecodedToken | null {
