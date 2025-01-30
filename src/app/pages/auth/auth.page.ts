@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import { IonicModule, IonDatetime } from '@ionic/angular';
+import {IonicModule, IonDatetime, ToastController} from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
 import {Gender} from "../../models/User/User";
 import {UserLoginDTO} from "../../models/User/DTO/User/UserLoginDTO";
@@ -29,7 +29,7 @@ export class AuthPage {
   datePickerOpen = false;
 
   constructor(private readonly authService: AuthService, private readonly userService : UserService,
-              private fb: FormBuilder, private readonly router: Router) {
+              private fb: FormBuilder, private readonly router: Router, private toastController: ToastController) {
 
     this.loginForm = this.fb.group({
       identifier: ['', [Validators.required]],
@@ -58,21 +58,22 @@ export class AuthPage {
       loginObservable.pipe(
         tap({
           next: (response) => {
-            console.log('User logged successfully:', response.token);
             this.authService.setToken(response.token).then(
               () => {
-                this.router.navigate(['/account']);
+                this.router.navigate(['/account']).then(() => {
+                  this.presentToast("Logged in successfully", "success");
+                });
               }
             );
           }
         }),
         catchError((error) => {
-          console.error('Login failed:', error);
+          this.presentToast("Unvalid login informations !", "danger");
           return throwError(() => error);
         })
       ).subscribe();
     } else {
-      console.log('Login form is not valid');
+      this.presentToast("Unvalid login informations !", "danger");
     }
   }
 
@@ -80,26 +81,28 @@ export class AuthPage {
     if (this.registerForm.valid) {
 
       const registrationData: UserRegisterDTO = this.registerForm.value;
+      registrationData.gender = Gender[registrationData.gender as keyof typeof Gender]
       const registrationObservable: Observable<any> = this.userService.register(registrationData);
 
       registrationObservable.pipe(
         tap({
           next: (response) => {
-            console.log('User registered successfully:', response);
             this.authService.setToken(response.token).then(
               () => {
-                this.router.navigate(['/account']);
+                this.router.navigate(['/account']).then(() => {
+                  this.presentToast("Successfully register informations !", "success");
+                });
               }
             );
           }
         }),
         catchError((error) => {
-          console.error('Registration failed:', error);
+          this.presentToast("Unvalid register informations !", "danger");
           return throwError(() => error);
         })
       ).subscribe();
     } else {
-      console.log('Register form is not valid');
+      this.presentToast("Unvalid register informations !", "danger");
     }
   }
 
@@ -148,5 +151,15 @@ export class AuthPage {
     return `${date.getUTCDate().toString().padStart(2, '0')}/${
       (date.getUTCMonth() + 1).toString().padStart(2, '0')}/${
       date.getUTCFullYear()}`;
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,
+      position: 'bottom'
+    });
+    toast.present().then(() => console.log('Toast presented'));
   }
 }

@@ -89,18 +89,14 @@ export class AccountPage implements OnInit {
 
 
   ngOnInit() {
-    this.loadUserData();
-
-    // Populate form with user data
-
-
+    console.log("Init !");
   }
 
-  ionViewWillEnter(){
-    this.loadUserData();
+  async ionViewWillEnter(){
+    await this.loadUserData();
   }
 
-  loadUserData() {
+  async loadUserData() {
     if(this.authService.currentUser.value) {
       this.userService.getById(this.authService.currentUser.value.id).subscribe((user) =>{
         this.user.next(user);
@@ -130,12 +126,11 @@ export class AccountPage implements OnInit {
           handler: async () => {
             try {
               await this.authService.logout();
-              console.log('Logout successful, navigating to auth');
               await this.router.navigate(['/auth']);
             } catch (error) {
               console.error('Error during logout:', error);
             }
-            return true; // Important to return true to close the alert
+            return true;
           }
         }
       ]

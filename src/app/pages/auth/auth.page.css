@@ -15,8 +15,4 @@ ion-modal {
   --width: min(90vw, 350px);
 }
 
-ion-datetime {
-  min-height: 400px;
-}
-
 /*# sourceMappingURL=auth.page.css.map */

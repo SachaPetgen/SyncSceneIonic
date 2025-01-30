@@ -7,6 +7,6 @@ export interface UserRegisterDTO{
   password: string,
   phoneNumber: string,
   birthDate: Date,
-  gender: Gender
+  gender: Gender | string
 
 }
