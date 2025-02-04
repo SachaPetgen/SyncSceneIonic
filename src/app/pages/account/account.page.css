@@ -1,3 +1,27 @@
+@media (prefers-color-scheme: dark) {
+  ion-header ion-toolbar {
+    --background: #202020;
+  }
+}
+
+ion-toolbar {
+  --opacity: .8;
+}
+
+ion-content {
+  --background: #f0f0f0;
+}
+@media (prefers-color-scheme: dark) {
+  ion-content {
+    --background: #202020;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  ion-content ion-header ion-toolbar {
+    --background: #202020;
+  }
+}
+
 .profile-header {
   padding: 20px 0;
 }
@@ -20,9 +44,14 @@ ion-card ion-card-header ion-card-title {
   font-weight: 600;
 }
 
+ion-list {
+  background: transparent;
+}
+
 ion-item {
   --padding-start: 0;
   --inner-padding-end: 0;
+  --background: transparent;
 }
 ion-item ion-icon {
   color: var(--ion-color-medium);
@@ -34,6 +63,7 @@ ion-item ion-label {
   font-weight: 500;
 }
 ion-item ion-input, ion-item ion-select {
+  --border-radius: 8px;
   --padding-start: 8px;
   margin-top: 4px;
   border-radius: 4px;

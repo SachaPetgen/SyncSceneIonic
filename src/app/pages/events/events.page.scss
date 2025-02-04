@@ -1,0 +1,23 @@
+ion-header {
+  @media (prefers-color-scheme: dark) {
+    ion-toolbar {
+      --background: #202020;
+    }
+  }
+}
+
+ion-content {
+  --background: #f0f0f0;
+
+  @media (prefers-color-scheme: dark) {
+    --background: #202020;
+  }
+
+  ion-header {
+    @media (prefers-color-scheme: dark) {
+      ion-toolbar {
+        --background: #202020;
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+@media (prefers-color-scheme: dark) {
+  ion-header ion-toolbar {
+    --background: #202020;
+  }
+}
+
+ion-content {
+  --background: #f0f0f0;
+}
+@media (prefers-color-scheme: dark) {
+  ion-content {
+    --background: #202020;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  ion-content ion-header ion-toolbar {
+    --background: #202020;
+  }
+}
+
+/*# sourceMappingURL=events.page.css.map */

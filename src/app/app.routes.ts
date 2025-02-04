@@ -4,12 +4,12 @@ import {authGuard, publicGuard} from "./guards/auth.guard";
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'feed',
     pathMatch: 'full',
   },
   {
-    path: 'home',
-    loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
+    path: 'feed',
+    loadComponent: () => import('./pages/feed/feed.page').then((m) => m.FeedPage),
   },
   {
     path: 'events',

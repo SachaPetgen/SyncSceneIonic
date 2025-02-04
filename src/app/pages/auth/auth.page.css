@@ -1,7 +1,32 @@
+@media (prefers-color-scheme: dark) {
+  ion-header ion-toolbar {
+    --background: #202020;
+  }
+}
+
+ion-content {
+  --background: #f0f0f0;
+}
+@media (prefers-color-scheme: dark) {
+  ion-content {
+    --background: #202020;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  ion-content ion-header ion-toolbar {
+    --background: #202020;
+  }
+}
+
 .auth-container {
   max-width: 500px;
   margin: 0 auto;
   padding: 1rem;
+}
+@media (prefers-color-scheme: dark) {
+  .auth-container ion-segment-button {
+    --background: #202020;
+  }
 }
 .auth-container ion-item {
   --padding-start: 0;
@@ -37,22 +62,22 @@
 .auth-container ion-item ion-input {
   --padding-start: 12px;
   --padding-end: 12px;
-  --background: var(--ion-color-light);
+  --background: #e4e4e4;
   --border-radius: 8px;
   width: 100%;
   min-height: 44px;
   border-radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  .auth-container ion-item ion-input {
+    --background: #575757;
+  }
 }
 .auth-container ion-item ion-select {
   --padding-start: 12px;
   --padding-end: 12px;
   --background: var(--ion-color-light);
   width: 100%;
-  min-height: 44px;
-  border-radius: 8px;
-}
-.auth-container ion-item ion-datetime-button {
-  --background: var(--ion-color-light);
   min-height: 44px;
   border-radius: 8px;
 }

@@ -16,7 +16,9 @@
         <!-- Identifier Input -->
         <ion-item [class.ion-invalid]="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty">
           <ion-label>Email or Username</ion-label>
-          <ion-input type="text" formControlName="identifier"></ion-input>
+          <ion-input  type="text" formControlName="identifier">
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+          </ion-input>
         </ion-item>
         @if (loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty) {
           <ion-note color="danger" slot="error">{{ getFieldError('identifier') }}</ion-note>
@@ -24,7 +26,9 @@
         <!-- Password Input -->
         <ion-item [class.ion-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.dirty">
           <ion-label>Password</ion-label>
-          <ion-input type="password" formControlName="password"></ion-input>
+          <ion-input type="password" formControlName="password">
+            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+          </ion-input>
         </ion-item>
         @if (loginForm.get('password')?.invalid && loginForm.get('password')?.dirty) {
           <ion-note color="danger" slot="error">{{ getFieldError('password') }}</ion-note>
@@ -89,7 +93,7 @@
         <!-- Birth Date -->
         <ion-item class="datetime-item" [class.ion-invalid]="registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.dirty">
           <ion-label>Birth Date</ion-label>
-          <ion-datetime-button datetime="datetime"></ion-datetime-button>
+          <ion-datetime-button color="danger" datetime="datetime"></ion-datetime-button>
         </ion-item>
         @if (registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.dirty) {
           <ion-note color="danger" slot="error">{{ getFieldError('birthDate') }}</ion-note>
