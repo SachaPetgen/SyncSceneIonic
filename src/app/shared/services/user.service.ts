@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import {ApiService} from "./api.service";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {UserRegisterDTO} from "../models/User/DTO/User/UserRegisterDTO";
-import {UserDetailsDTO} from "../models/User/DTO/User/UserDetailsDTO";
-import {UserLoginDTO} from "../models/User/DTO/User/UserLoginDTO";
-import {UserUpdateDTO} from "../models/User/DTO/User/UserUpdateDTO";
-import {UserPatchPasswordDTO} from "../models/User/DTO/User/UserPatchPasswordDTO";
+import {UserRegisterDTO} from "../../models/User/DTO/User/UserRegisterDTO";
+import {UserDetailsDTO} from "../../models/User/DTO/User/UserDetailsDTO";
+import {UserLoginDTO} from "../../models/User/DTO/User/UserLoginDTO";
+import {UserUpdateDTO} from "../../models/User/DTO/User/UserUpdateDTO";
+import {UserPatchPasswordDTO} from "../../models/User/DTO/User/UserPatchPasswordDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +22,12 @@ export class UserService extends ApiService{
     return this.HttpClient.get<UserDetailsDTO>(this.route + "/" + id);
   }
 
-  public register(dto: UserRegisterDTO) : Observable<UserDetailsDTO>{
-    return this.HttpClient.post<UserDetailsDTO>(this.route + "/register", dto);
+  public register(dto: UserRegisterDTO) : Observable<{token : string}>{
+    return this.HttpClient.post<{token : string}>(this.route + "/register", dto);
   }
 
-  public login(dto: UserLoginDTO) : Observable<UserDetailsDTO>{
-    return this.HttpClient.post<UserDetailsDTO>(this.route + "/login", dto);
+  public login(dto: UserLoginDTO) : Observable<{token : string}>{
+    return this.HttpClient.post<{token : string}>(this.route + "/login", dto);
   }
 
   public update(dto: UserUpdateDTO, id: string) : Observable<UserDetailsDTO>{

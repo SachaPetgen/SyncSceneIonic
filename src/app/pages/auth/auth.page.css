@@ -1,18 +1,74 @@
 .auth-container {
-  max-width: 400px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1rem;
 }
-
-.error-message {
-  color: var(--ion-color-danger);
-  font-size: 0.8rem;
-  margin: -0.5rem 0 1rem 1rem;
+.auth-container ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: auto;
+  --background: transparent;
+  --border-color: transparent;
+  margin-bottom: 16px;
 }
-
-ion-modal {
-  --height: auto;
-  --width: min(90vw, 350px);
+.auth-container ion-item::part(native) {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+}
+.auth-container ion-item.datetime-item::part(native) {
+  flex-direction: row;
+  align-items: center;
+}
+.auth-container ion-item.datetime-item ion-label {
+  margin: 0 16px 0 4px;
+  padding: 0;
+}
+.auth-container ion-item ion-label {
+  --color: var(--ion-text-color);
+  margin: 0 0 8px 0;
+  padding-left: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: block;
+  white-space: nowrap;
+  width: 100%;
+}
+.auth-container ion-item ion-input {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --background: var(--ion-color-light);
+  --border-radius: 8px;
+  width: 100%;
+  min-height: 44px;
+  border-radius: 8px;
+}
+.auth-container ion-item ion-select {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --background: var(--ion-color-light);
+  width: 100%;
+  min-height: 44px;
+  border-radius: 8px;
+}
+.auth-container ion-item ion-datetime-button {
+  --background: var(--ion-color-light);
+  min-height: 44px;
+  border-radius: 8px;
+}
+.auth-container ion-item.ion-invalid.ion-dirty ion-input, .auth-container ion-item.ion-invalid.ion-dirty ion-select, .auth-container ion-item.ion-invalid.ion-dirty ion-datetime-button {
+  --background: rgba(var(--ion-color-danger-rgb), 0.1);
+}
+.auth-container ion-note[color=danger] {
+  display: block !important;
+  margin: -8px 0 16px 4px !important;
+  padding: 0 !important;
+  font-size: 0.875rem !important;
+}
+.auth-container ion-button {
+  margin-top: 24px;
+  --border-radius: 8px;
+  min-height: 44px;
 }
 
 /*# sourceMappingURL=auth.page.css.map */

@@ -1,14 +1,29 @@
 import { Component, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {IonicModule, IonDatetime, ToastController} from '@ionic/angular';
-import { AuthService } from '../../services/auth.service';
-import {Gender} from "../../models/User/User";
-import {UserLoginDTO} from "../../models/User/DTO/User/UserLoginDTO";
-import {catchError, Observable, tap, throwError} from "rxjs";
-import {UserRegisterDTO} from "../../models/User/DTO/User/UserRegisterDTO";
-import {UserService} from "../../services/user.service";
-import {Router} from "@angular/router";
+import {CommonModule, formatDate} from '@angular/common';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControlStatus,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule, ValidationErrors,
+  Validators
+} from '@angular/forms';
+import {IonicModule, IonDatetime, ToastController, ModalController} from '@ionic/angular';
+import { AuthService } from '../../shared/services/auth.service';
+import { Gender } from "../../models/User/User";
+import { UserLoginDTO } from "../../models/User/DTO/User/UserLoginDTO";
+import { catchError, finalize, Observable, throwError } from "rxjs";
+import { UserRegisterDTO } from "../../models/User/DTO/User/UserRegisterDTO";
+import { UserService } from "../../shared/services/user.service";
+import { Router } from "@angular/router";
+
+type FormType = 'login' | 'register';
+
+interface AuthError {
+  message: string;
+  field?: string;
+}
 
 @Component({
   selector: 'app-auth',
@@ -19,147 +34,202 @@ import {Router} from "@angular/router";
 })
 export class AuthPage {
 
-  @ViewChild(IonDatetime) datetime!: IonDatetime;
+  @ViewChild('datetime') datetime!: IonDatetime;
 
-  loginForm: FormGroup;
-  registerForm: FormGroup;
 
-  currentForm: 'login' | 'register' = 'login';
+  loginForm!: FormGroup;
+  registerForm!: FormGroup;
+  currentForm: FormType = 'login';
   Gender = Gender;
+
+  isLoading = false;
+
   datePickerOpen = false;
+  selectedDate : string = '';
+  maxDate = new Date().toISOString();
 
-  constructor(private readonly authService: AuthService, private readonly userService : UserService,
-              private fb: FormBuilder, private readonly router: Router, private toastController: ToastController) {
+  private readonly MIN_PASSWORD_LENGTH = 6;
+  private readonly MIN_USERNAME_LENGTH = 3;
+  private readonly PHONE_PATTERN = '^[0-9]{10}$';
 
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+    private readonly fb: FormBuilder,
+    private readonly router: Router,
+    private readonly toastController: ToastController,
+    private readonly modalController: ModalController
+  ) {
+    this.initializeForms();
+  }
+  private initializeForms() {
     this.loginForm = this.fb.group({
       identifier: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(8)]]
     });
 
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+      ]],
       passwordConfirmation: ['', [Validators.required]],
-      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      birthDate: ['', Validators.required],
-      gender: ['', Validators.required]
+      phoneNumber: ['', [Validators.required, Validators.pattern(/^\+?[1-9]\d{1,14}$/)]],
+      birthDate: ['', [Validators.required]],
+      gender: ['', [Validators.required]]
     }, {
       validators: this.passwordMatchValidator
     });
   }
 
   onLogin(): void {
-    if (this.loginForm.valid) {
-
-      const loginData: UserLoginDTO = this.loginForm.value;
-      const loginObservable: Observable<any> = this.userService.login(loginData);
-
-      loginObservable.pipe(
-        tap({
-          next: (response) => {
-            this.authService.setToken(response.token).then(
-              () => {
-                this.router.navigate(['/account']).then(() => {
-                  this.presentToast("Logged in successfully", "success");
-                });
-              }
-            );
-          }
-        }),
-        catchError((error) => {
-          this.presentToast("Unvalid login informations !", "danger");
-          return throwError(() => error);
-        })
-      ).subscribe();
-    } else {
-      this.presentToast("Unvalid login informations !", "danger");
+    if (this.loginForm.invalid) {
+      this.showValidationErrors(this.loginForm);
+      return;
     }
+
+    this.isLoading = true;
+    const loginData: UserLoginDTO = this.loginForm.value;
+
+    this.userService.login(loginData).pipe(
+      catchError(this.handleAuthError.bind(this)),
+      finalize(() => this.isLoading = false)
+    ).subscribe({
+      next: (response) => this.handleAuthSuccess(response, 'Logged in successfully')
+    });
   }
 
   onRegister(): void {
-    if (this.registerForm.valid) {
+    if (this.registerForm.invalid) {
+      this.showValidationErrors(this.registerForm);
+      return;
+    }
 
-      const registrationData: UserRegisterDTO = this.registerForm.value;
-      registrationData.gender = Gender[registrationData.gender as keyof typeof Gender]
-      const registrationObservable: Observable<any> = this.userService.register(registrationData);
+    const date = new Date(this.registerForm.get('birthDate')?.value);
+    const utcDate = date.toISOString();
 
-      registrationObservable.pipe(
-        tap({
-          next: (response) => {
-            this.authService.setToken(response.token).then(
-              () => {
-                this.router.navigate(['/account']).then(() => {
-                  this.presentToast("Successfully register informations !", "success");
-                });
-              }
-            );
-          }
-        }),
-        catchError((error) => {
-          this.presentToast("Unvalid register informations !", "danger");
-          return throwError(() => error);
-        })
-      ).subscribe();
-    } else {
-      this.presentToast("Unvalid register informations !", "danger");
+    if(!utcDate || date > new Date()) {
+      this.presentToast('Invalid date', 'danger');
+      return;
+    }
+
+    this.isLoading = true;
+    const registrationData: UserRegisterDTO = {
+      ...this.registerForm.value,
+      gender: Gender[this.registerForm.value.gender as keyof typeof Gender],
+      birthDate: utcDate
+    };
+
+    this.userService.register(registrationData).pipe(
+      catchError(this.handleAuthError.bind(this)),
+      finalize(() => this.isLoading = false)
+    ).subscribe({
+      next: (response) => this.handleAuthSuccess(response, 'Successfully registered!')
+    });
+  }
+
+  private async handleAuthSuccess(response: { token: string }, message: string): Promise<void> {
+    try {
+      await this.authService.setToken(response.token);
+      await this.router.navigate(['/account']);
+      await this.presentToast(message, 'success');
+    } catch (error) {
+      console.error('Post-authentication error:', error);
+      await this.presentToast('An error occurred after authentication', 'danger');
     }
   }
 
-  private passwordMatchValidator(g: FormGroup) {
-    return g.get('password')?.value === g.get('passwordConfirmation')?.value
-      ? null
-      : { mismatch: true };
+  private handleAuthError(error: any) {
+    console.log('Auth error:', error);
+    this.presentToast(error?.error?.detail, 'danger');
+    return throwError(() => error);
   }
 
-  presentDatePicker() {
-    this.datePickerOpen = true;
+  private getErrorMessage(error: any): string {
+    if (error?.error?.message) return error.error.message;
+    if (error?.message) return error.message;
+    return this.currentForm === 'login'
+      ? 'Invalid login information!'
+      : 'Invalid registration information!';
   }
 
-  dismissDatePicker() {
-    this.datePickerOpen = false;
+  private showValidationErrors(form: FormGroup): void {
+    Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+
+      if (control) {
+        control.markAsTouched();
+        control.markAsDirty();
+        control.updateValueAndValidity({ onlySelf: true });
+      }
+    });
   }
 
-  async confirmDate() {
-    await this.datetime.confirm();
-    const value = this.datetime.value;
+  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password');
+    const confirmation = control.get('passwordConfirmation');
 
-    if (value && typeof value === 'string') {
-      const date = new Date(value);
-      const utcDate = new Date(Date.UTC(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-      ));
-
-      this.registerForm.patchValue({
-        birthDate: utcDate.toISOString()
-      });
+    if (password && confirmation && password.value !== confirmation.value) {
+      confirmation.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
     }
 
-    this.dismissDatePicker();
+    if (confirmation?.hasError('passwordMismatch')) {
+
+      const errors = { ...confirmation.errors };
+      delete errors['passwordMismatch'];
+      confirmation.setErrors(Object.keys(errors).length ? errors : null);
+    }
+
+    return null;
   }
 
-  dateChanged(event: any) {
-    console.log('Date changed:', event);
+  dateChanged(value: any) {
+    this.selectedDate = value;
+    this.registerForm.patchValue({ birthDate: value });
+    console.log('Selected date:', value);
   }
 
-  formatDate(value: string): string {
-    if (!value) return '';
-    const date = new Date(value);
-    // Use UTC methods to display the date
-    return `${date.getUTCDate().toString().padStart(2, '0')}/${
-      (date.getUTCMonth() + 1).toString().padStart(2, '0')}/${
-      date.getUTCFullYear()}`;
-  }
-
-  async presentToast(message: string, color: string) {
+  private async presentToast(message: string, color: 'success' | 'danger'): Promise<void> {
     const toast = await this.toastController.create({
       message,
       duration: 2000,
       color,
       position: 'bottom'
     });
-    toast.present().then(() => console.log('Toast presented'));
+    await toast.present();
+  }
+
+  get currentFormGroup(): FormGroup {
+    return this.currentForm === 'login' ? this.loginForm : this.registerForm;
+  }
+
+  capitalizeFirstLetter(string : string) {
+    return String(string).charAt(0).toUpperCase() + String(string).slice(1);
+  }
+
+  getFieldError(fieldName: string): string {
+    const form = this.currentForm === 'login' ? this.loginForm : this.registerForm;
+    const control = form.get(fieldName);
+
+    if (!control?.errors || !control.dirty) return '';
+
+    if (control.hasError('required')) return `${this.capitalizeFirstLetter(fieldName)} is required`;
+    if (control.hasError('email')) return 'Please enter a valid email address';
+    if (control.hasError('minlength')) return `${this.capitalizeFirstLetter(fieldName)} must be at least ${control.getError('minlength').requiredLength} characters`;
+    if (control.hasError('pattern')) {
+      if (fieldName === 'password') {
+        return 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+      }
+      if (fieldName === 'phoneNumber') {
+        return 'Please enter a valid phone number';
+      }
+    }
+    if (control.hasError('passwordMismatch')) return 'Passwords do not match';
+
+    return 'Invalid input';
   }
 }

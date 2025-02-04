@@ -25,9 +25,9 @@
               <ion-label position="stacked">Username</ion-label>
               <ion-input formControlName="username" placeholder="Enter username"></ion-input>
               <div class="error-container">
-                @if(updateForm.get('username')?.hasError('required') && updateForm.get('username')?.touched) {
+                @if(updateForm.get('username')?.invalid && updateForm.get('username')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>Username is required</small>
+                    <small>{{ getFieldError("username") }}</small>
                   </ion-text>
                 }
               </div>
@@ -38,9 +38,9 @@
               <ion-label position="stacked">Email</ion-label>
               <ion-input formControlName="email" type="email" placeholder="Enter email"></ion-input>
               <div class="error-container">
-                @if(updateForm.get('email')?.hasError('email') && updateForm.get('email')?.touched) {
+                @if(updateForm.get('email')?.invalid && updateForm.get('email')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>Please enter a valid email</small>
+                    <small>{{ getFieldError("email") }}</small>
                   </ion-text>
                 }
               </div>
@@ -50,6 +50,13 @@
               <ion-icon name="call-outline" slot="start"></ion-icon>
               <ion-label position="stacked">Phone number</ion-label>
               <ion-input formControlName="phoneNumber" type="tel" placeholder="Enter phone number"></ion-input>
+              <div class="error-container">
+                @if(updateForm.get('phoneNumber')?.invalid && updateForm.get('phoneNumber')?.dirty) {
+                  <ion-text color="danger" class="error-message">
+                    <small>{{ getFieldError("phoneNumber") }}</small>
+                  </ion-text>
+                }
+              </div>
             </ion-item>
 
             <ion-item>
@@ -93,9 +100,9 @@
               <ion-label position="stacked">Current Password</ion-label>
               <ion-input formControlName="oldPassword" type="password" placeholder="Enter current password"></ion-input>
               <div class="error-container">
-                @if(changePasswordForm.get('oldPassword')?.hasError('required') && changePasswordForm.get('oldPassword')?.touched) {
+                @if(changePasswordForm.get('oldPassword')?.invalid && changePasswordForm.get('oldPassword')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>Current password is required</small>
+                    <small>{{ getFieldError("oldPassword") }}</small>
                   </ion-text>
                 }
               </div>
@@ -106,9 +113,9 @@
               <ion-label position="stacked">New Password</ion-label>
               <ion-input formControlName="newPassword" type="password" placeholder="Enter new password"></ion-input>
               <div class="error-container">
-                @if(changePasswordForm.get('newPassword')?.hasError('minlength')) {
+                @if(changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>Password must be at least 8 characters</small>
+                    <small>{{ getFieldError("newPassword") }}</small>
                   </ion-text>
                 }
               </div>
@@ -119,9 +126,9 @@
               <ion-label position="stacked">Confirm New Password</ion-label>
               <ion-input formControlName="newPasswordConfirmation" type="password" placeholder="Confirm new password"></ion-input>
               <div class="error-container">
-                @if(changePasswordForm.get('newPasswordConfirmation')?.hasError('mismatch')) {
+                @if(changePasswordForm.get('newPasswordConfirmation')?.invalid && changePasswordForm.get('newPasswordConfirmation')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>Passwords do not match</small>
+                    <small>{{ getFieldError("newPasswordConfirmation") }}</small>
                   </ion-text>
                 }
               </div>

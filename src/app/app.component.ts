@@ -11,7 +11,7 @@ import {
 import {RouterLink} from "@angular/router";
 import {addIcons} from "ionicons";
 import {homeOutline, musicalNotesOutline, peopleOutline, people} from "ionicons/icons";
-import {AuthService} from "./services/auth.service";
+import {AuthService} from "./shared/services/auth.service";
 import {AsyncPipe} from "@angular/common";
 
 @Component({

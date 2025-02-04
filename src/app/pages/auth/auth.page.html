@@ -1,5 +1,6 @@
 <ion-content class="ion-padding">
   <div class="auth-container">
+    <!-- Segment Selector -->
     <ion-segment [(ngModel)]="currentForm" class="ion-margin-bottom">
       <ion-segment-button value="login">
         <ion-label>Login</ion-label>
@@ -9,203 +10,121 @@
       </ion-segment-button>
     </ion-segment>
 
+    <!-- Login Form -->
     @if (currentForm === 'login') {
-      <!-- Login Form -->
       <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">Identifier</ion-label>
+        <!-- Identifier Input -->
+        <ion-item [class.ion-invalid]="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty">
+          <ion-label>Email or Username</ion-label>
           <ion-input type="text" formControlName="identifier"></ion-input>
         </ion-item>
-        <div class="error-container">
-          @if (loginForm.get('identifier')?.touched) {
-            @if (loginForm.get('identifier')?.errors?.['required']) {
-              <ion-text color="danger" class="error-message">
-                Identifier is required
-              </ion-text>
-            }
-          }
-        </div>
-
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">Password</ion-label>
+        @if (loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty) {
+          <ion-note color="danger" slot="error">{{ getFieldError('identifier') }}</ion-note>
+        }
+        <!-- Password Input -->
+        <ion-item [class.ion-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.dirty">
+          <ion-label>Password</ion-label>
           <ion-input type="password" formControlName="password"></ion-input>
         </ion-item>
-        <div class="error-container">
-          @if (loginForm.get('password')?.touched) {
-            @if (loginForm.get('password')?.errors?.['required']) {
-              <ion-text color="danger" class="error-message">
-                Password is required
-              </ion-text>
-            }
-            @if (loginForm.get('password')?.errors?.['minlength']) {
-              <ion-text color="danger" class="error-message">
-                Password must be at least 6 characters
-              </ion-text>
-            }
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.dirty) {
+          <ion-note color="danger" slot="error">{{ getFieldError('password') }}</ion-note>
+        }
+        <!-- Submit Button -->
+        <ion-button expand="block" type="submit" class="ion-margin-top" [disabled]="!loginForm.valid || isLoading">
+          @if (isLoading) {
+            <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+            Login
           }
-        </div>
-
-        <ion-button expand="block" type="submit" [disabled]="!loginForm.valid">
-          Login
         </ion-button>
       </form>
     }
 
+    <!-- Register Form -->
     @if (currentForm === 'register') {
-      <!-- Register Form -->
       <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">Username</ion-label>
+        <!-- Username Input -->
+        <ion-item [class.ion-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.dirty">
+          <ion-label>Username</ion-label>
           <ion-input type="text" formControlName="username"></ion-input>
         </ion-item>
-        <div class="error-container">
-          @if (registerForm.get('username')?.touched) {
-            @if (registerForm.get('username')?.errors?.['required']) {
-              <ion-text color="danger" class="error-message">
-                Username is required
-              </ion-text>
-            }
-            @if (registerForm.get('username')?.errors?.['minlength']) {
-              <ion-text color="danger" class="error-message">
-                Username must be at least 3 characters
-              </ion-text>
-            }
-          }
-        </div>
-
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">Email</ion-label>
+        @if (registerForm.get('username')?.invalid && registerForm.get('username')?.dirty) {
+          <ion-note color="danger" slot="error">{{ getFieldError('username') }}</ion-note>
+        }
+        <!-- Email Input -->
+        <ion-item [class.ion-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.dirty">
+          <ion-label>Email</ion-label>
           <ion-input type="email" formControlName="email"></ion-input>
         </ion-item>
-        <div class="error-container">
-          @if (registerForm.get('email')?.touched) {
-            @if (registerForm.get('email')?.errors?.['required']) {
-              <ion-text color="danger" class="error-message">
-                Email is required
-              </ion-text>
-            }
-            @if (registerForm.get('email')?.errors?.['email']) {
-              <ion-text color="danger" class="error-message">
-                Please enter a valid email address
-              </ion-text>
-            }
-          }
-        </div>
-
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">Password</ion-label>
+        @if (registerForm.get('email')?.invalid && registerForm.get('email')?.dirty) {
+          <ion-note color="danger" slot="error">{{ getFieldError('email') }}</ion-note>
+        }
+        <!-- Password Input -->
+        <ion-item [class.ion-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.dirty">
+          <ion-label>Password</ion-label>
           <ion-input type="password" formControlName="password"></ion-input>
         </ion-item>
-        <div class="error-container">
-          @if (registerForm.get('password')?.touched) {
-            @if (registerForm.get('password')?.errors?.['required']) {
-              <ion-text color="danger" class="error-message">
-                Password is required
-              </ion-text>
-            }
-            @if (registerForm.get('password')?.errors?.['pattern']) {
-              <ion-text color="danger" class="error-message">
-                Password must have at least 8 characters, one uppercase, one lowercase, and one number
-              </ion-text>
-            }
-          }
-        </div>
-
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">Confirm Password</ion-label>
+        @if (registerForm.get('password')?.invalid && registerForm.get('password')?.dirty) {
+          <ion-note color="danger" slot="error">{{ getFieldError('password') }}</ion-note>
+        }
+        <!-- Password Confirmation -->
+        <ion-item
+          [class.ion-invalid]="registerForm.get('passwordConfirmation')?.invalid && registerForm.get('passwordConfirmation')?.dirty">
+          <ion-label>Confirm Password</ion-label>
           <ion-input type="password" formControlName="passwordConfirmation"></ion-input>
         </ion-item>
-        <div class="error-container">
-          @if (registerForm.get('passwordConfirmation')?.touched) {
-            @if (registerForm.get('passwordConfirmation')?.errors?.['required']) {
-              <ion-text color="danger" class="error-message">
-                Password confirmation is required
-              </ion-text>
-            }
-            @if (registerForm.get('passwordConfirmation')?.errors?.['mismatch']) {
-              <ion-text color="danger" class="error-message">
-                Passwords do not match
-              </ion-text>
-            }
-          }
-        </div>
-
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">Phone Number</ion-label>
+        @if (registerForm.get('passwordConfirmation')?.invalid && registerForm.get('passwordConfirmation')?.dirty) {
+          <ion-note color="danger" slot="error">{{ getFieldError('passwordConfirmation') }}</ion-note>
+        }
+        <!-- Phone Number -->
+        <ion-item
+          [class.ion-invalid]="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.dirty">
+          <ion-label>Phone Number</ion-label>
           <ion-input type="tel" formControlName="phoneNumber"></ion-input>
         </ion-item>
-        <div class="error-container">
-          @if (registerForm.get('phoneNumber')?.touched) {
-            @if (registerForm.get('phoneNumber')?.errors?.['pattern']) {
-              <ion-text color="danger" class="error-message">
-                Please enter a valid phone number
-              </ion-text>
-            }
-          }
-        </div>
-
-        <ion-item class="ion-margin-bottom">
-          <ion-label position="floating">Birth Date</ion-label>
-          <ion-input
-            readonly
-            (click)="presentDatePicker()"
-            [value]="formatDate(registerForm.get('birthDate')?.value)"
-            placeholder="Select Date">
-          </ion-input>
+        @if (registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.dirty) {
+          <ion-note color="danger" slot="error">{{ getFieldError('phoneNumber') }}</ion-note>
+        }
+        <!-- Birth Date -->
+        <!-- Birth Date -->
+        <ion-item class="datetime-item" [class.ion-invalid]="registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.dirty">
+          <ion-label>Birth Date</ion-label>
+          <ion-datetime-button datetime="datetime"></ion-datetime-button>
         </ion-item>
-        <div class="error-container">
-          @if (registerForm.get('birthDate')?.touched) {
-            @if (registerForm.get('birthDate')?.errors?.['required']) {
-              <ion-text color="danger" class="error-message">
-                Birth date is required
-              </ion-text>
-            }
-            @if (registerForm.get('birthDate')?.errors?.['futureDate']) {
-              <ion-text color="danger" class="error-message">
-                Birth date cannot be in the future
-              </ion-text>
-            }
-          }
-        </div>
-
-        <ion-item class="ion-margin-bottom">
+        @if (registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.dirty) {
+          <ion-note color="danger" slot="error">{{ getFieldError('birthDate') }}</ion-note>
+        }
+        <!-- Gender Selection -->
+        <ion-item [class.ion-invalid]="registerForm.get('gender')?.invalid && registerForm.get('gender')?.dirty">
           <ion-label>Gender</ion-label>
-          <ion-select formControlName="gender">
+          <ion-select formControlName="gender" interface="action-sheet">
             <ion-select-option [value]="Gender.Male">Male</ion-select-option>
             <ion-select-option [value]="Gender.Female">Female</ion-select-option>
             <ion-select-option [value]="Gender.Other">Other</ion-select-option>
           </ion-select>
         </ion-item>
-        <div class="error-container">
-          @if (registerForm.get('gender')?.touched && registerForm.get('gender')?.errors?.['required']) {
-            <ion-text color="danger" class="error-message">
-              Gender is required
-            </ion-text>
+        @if (registerForm.get('gender')?.invalid && registerForm.get('gender')?.dirty) {
+          <ion-note color="danger" slot="error">{{ getFieldError('gender') }}</ion-note>
+        }
+        <!-- Submit Button -->
+        <ion-button expand="block" type="submit" class="ion-margin-top" [disabled]="!registerForm.valid || isLoading">
+          @if (isLoading) {
+            <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+            Register
           }
-        </div>
-
-        <ion-button expand="block" type="submit" [disabled]="!registerForm.valid">
-          Register
         </ion-button>
       </form>
     }
 
-    <!-- Date Picker Modal -->
-    <ion-modal [isOpen]="datePickerOpen">
+    <ion-modal [keepContentsMounted]="true">
       <ng-template>
         <ion-datetime
-          #datetime
-          presentation="date"
-          [showDefaultButtons]="true"
-          (ionChange)="dateChanged($event)"
-          (ionCancel)="dismissDatePicker()"
+          (ionChange)="dateChanged($event.detail.value)"
           [preferWheel]="true"
-          locale="fr-FR"
-          timezone="UTC">
-          <ion-buttons slot="buttons">
-            <ion-button color="danger" (click)="dismissDatePicker()">Cancel</ion-button>
-            <ion-button color="primary" (click)="confirmDate()">Confirm</ion-button>
-          </ion-buttons>
+          id="datetime"
+          presentation="date"
+          showDefaultButtons="true">
         </ion-datetime>
       </ng-template>
     </ion-modal>

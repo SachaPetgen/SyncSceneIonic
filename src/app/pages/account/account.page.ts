@@ -1,6 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule, DatePipe} from '@angular/common';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 import {
   IonBackButton, IonButton,
   IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
@@ -11,10 +19,10 @@ import {
   IonToolbar
 } from '@ionic/angular/standalone';
 import {AlertController, ToastController} from "@ionic/angular";
-import {AuthService} from "../../services/auth.service";
+import {AuthService} from "../../shared/services/auth.service";
 import {UserDetailsDTO} from "../../models/User/DTO/User/UserDetailsDTO";
 import {Router} from "@angular/router";
-import {UserService} from "../../services/user.service";
+import {UserService} from "../../shared/services/user.service";
 import {BehaviorSubject, catchError, Observable, tap, throwError} from "rxjs";
 import {Gender, Role} from 'src/app/models/User/User';
 import {UserUpdateDTO} from "../../models/User/DTO/User/UserUpdateDTO";
@@ -194,25 +202,20 @@ export class AccountPage implements OnInit {
     }
   }
 
-  private passwordMatchValidator(group: FormGroup): { [key: string]: any } | null {
-    const newPassword = group.get('newPassword');
-    const confirmPassword = group.get('newPasswordConfirmation');
+  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const newPassword = control.get('newPassword');
+    const newPasswordConfirmation = control.get('newPasswordConfirmation');
 
-    if (!newPassword || !confirmPassword) return null;
-
-    if (newPassword.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ mismatch: true });
-      return { mismatch: true };
+    if (newPassword && newPasswordConfirmation && newPassword.value !== newPasswordConfirmation.value) {
+      newPasswordConfirmation.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
     }
 
-    const errors = confirmPassword.errors;
-    if (errors) {
-      delete errors['mismatch'];
-      if (Object.keys(errors).length === 0) {
-        confirmPassword.setErrors(null);
-      } else {
-        confirmPassword.setErrors(errors);
-      }
+    if (newPasswordConfirmation?.hasError('passwordMismatch')) {
+
+      const errors = { ...newPasswordConfirmation.errors };
+      delete errors['passwordMismatch'];
+      newPasswordConfirmation.setErrors(Object.keys(errors).length ? errors : null);
     }
 
     return null;
@@ -234,5 +237,32 @@ export class AccountPage implements OnInit {
       position: 'bottom'
     });
     toast.present().then(() => console.log('Toast presented'));
+  }
+
+  capitalizeFirstLetter(string : string) {
+    return String(string).charAt(0).toUpperCase() + String(string).slice(1);
+  }
+
+  getFieldError(fieldName : string) : string {
+    const control = this.updateForm.get(fieldName);
+
+    if (!control?.errors || !control.dirty) return '';
+
+    if (control.hasError('required')) return `${this.capitalizeFirstLetter(fieldName)} is required`;
+
+    if (control.hasError('minlength')) return `${this.capitalizeFirstLetter(fieldName)} must be at least ${control.getError('minlength').requiredLength} characters`;
+
+    if (control.hasError('pattern')) {
+      if (fieldName === 'password') {
+        return 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+      }
+      if (fieldName === 'phoneNumber') {
+        return 'Please enter a valid phone number';
+      }
+    }
+
+    if (control.hasError('passwordMismatch')) return 'Passwords do not match';
+
+    return 'Invalid input';
   }
 }
