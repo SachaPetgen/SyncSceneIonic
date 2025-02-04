@@ -27,7 +27,7 @@
               <div class="error-container">
                 @if(updateForm.get('username')?.invalid && updateForm.get('username')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("username") }}</small>
+                    <small>{{ getFieldError("username", this.updateForm) }}</small>
                   </ion-text>
                 }
               </div>
@@ -40,7 +40,7 @@
               <div class="error-container">
                 @if(updateForm.get('email')?.invalid && updateForm.get('email')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("email") }}</small>
+                    <small>{{ getFieldError("email", this.updateForm) }}</small>
                   </ion-text>
                 }
               </div>
@@ -53,7 +53,7 @@
               <div class="error-container">
                 @if(updateForm.get('phoneNumber')?.invalid && updateForm.get('phoneNumber')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("phoneNumber") }}</small>
+                    <small>{{ getFieldError("phoneNumber", this.updateForm) }}</small>
                   </ion-text>
                 }
               </div>
@@ -102,7 +102,7 @@
               <div class="error-container">
                 @if(changePasswordForm.get('oldPassword')?.invalid && changePasswordForm.get('oldPassword')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("oldPassword") }}</small>
+                    <small>{{ getFieldError("oldPassword", this.changePasswordForm) }}</small>
                   </ion-text>
                 }
               </div>
@@ -115,7 +115,7 @@
               <div class="error-container">
                 @if(changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("newPassword") }}</small>
+                    <small>{{ getFieldError("newPassword", this.changePasswordForm) }}</small>
                   </ion-text>
                 }
               </div>
@@ -128,7 +128,7 @@
               <div class="error-container">
                 @if(changePasswordForm.get('newPasswordConfirmation')?.invalid && changePasswordForm.get('newPasswordConfirmation')?.dirty) {
                   <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("newPasswordConfirmation") }}</small>
+                    <small>{{ getFieldError("newPasswordConfirmation", this.changePasswordForm) }}</small>
                   </ion-text>
                 }
               </div>

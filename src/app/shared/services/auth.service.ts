@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 
-import {BehaviorSubject, from, map, Observable} from 'rxjs';
+import {BehaviorSubject, filter, from, map, Observable, switchMap} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {JwtHelperService} from "@auth0/angular-jwt";
 
@@ -29,8 +29,12 @@ export class AuthService {
 
   private jwtHelper = new JwtHelperService();
 
+  private initialized = new BehaviorSubject<boolean>(false);
+
+
   constructor(private http: HttpClient) {
-    this.loadToken();
+
+    this.initializeAuth();
 
     this.token.subscribe(token => {
       if (token) {
@@ -42,6 +46,11 @@ export class AuthService {
         this.authState.next(false);
       }
     });
+  }
+
+  private async initializeAuth() {
+    await this.loadToken();
+    this.initialized.next(true);
   }
 
   private async loadToken() {
@@ -77,7 +86,12 @@ export class AuthService {
   }
 
   isAuthenticated(): Observable<boolean> {
-    return this.authState.asObservable();
+    return this.initialized.pipe(
+      // Only proceed once initialized is true
+      filter(initialized => initialized),
+      // Then switch to auth state stream
+      switchMap(() => this.authState.asObservable())
+    );
   }
 
   getCurrentUser(): Observable<DecodedToken | null> {

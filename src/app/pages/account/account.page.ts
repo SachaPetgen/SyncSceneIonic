@@ -87,7 +87,11 @@ export class AccountPage implements OnInit {
 
     this.changePasswordForm = this.fb.group({
       oldPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      newPassword: ['', [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
+      ]],
       newPasswordConfirmation: ['', Validators.required]
     }
     ,{
@@ -177,7 +181,6 @@ export class AccountPage implements OnInit {
   }
 
   onChangePassword() {
-    console.log('Change password form:', this.changePasswordForm.value);
 
     if(this.changePasswordForm.valid) {
       const changePasswordData = this.changePasswordForm.value;
@@ -186,19 +189,15 @@ export class AccountPage implements OnInit {
       changePasswordObservable.pipe(
         tap({
           next: (response) => {
-            console.log('Password changed successfully:', response);
             this.presentToast('Password changed successfully', 'success');
             this.changePasswordForm.reset();
           }
         }),
         catchError((error) => {
-          console.error('Password change failed:', error);
-          this.presentToast('Password change failed', 'danger');
+          this.presentToast('Wrong password !', 'danger');
           return throwError(() => error);
         })
       ).subscribe();
-    } else {
-      console.log('Change password form is not valid');
     }
   }
 
@@ -243,8 +242,8 @@ export class AccountPage implements OnInit {
     return String(string).charAt(0).toUpperCase() + String(string).slice(1);
   }
 
-  getFieldError(fieldName : string) : string {
-    const control = this.updateForm.get(fieldName);
+  getFieldError(fieldName : string, form : FormGroup) : string {
+    const control = form.get(fieldName);
 
     if (!control?.errors || !control.dirty) return '';
 
@@ -253,7 +252,7 @@ export class AccountPage implements OnInit {
     if (control.hasError('minlength')) return `${this.capitalizeFirstLetter(fieldName)} must be at least ${control.getError('minlength').requiredLength} characters`;
 
     if (control.hasError('pattern')) {
-      if (fieldName === 'password') {
+      if (fieldName === 'newPassword') {
         return 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
       }
       if (fieldName === 'phoneNumber') {
