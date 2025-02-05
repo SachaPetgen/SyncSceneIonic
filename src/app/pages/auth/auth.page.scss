@@ -1,119 +1,12 @@
-ion-header {
-  @media (prefers-color-scheme: dark) {
-    ion-toolbar {
-      --background: #202020;
-    }
-  }
-}
-
-ion-content {
-  --background: #f0f0f0;
-
-  @media (prefers-color-scheme: dark) {
-    --background: #202020;
-  }
-
-  ion-header {
-    @media (prefers-color-scheme: dark) {
-      ion-toolbar {
-        --background: #202020;
-      }
-    }
-  }
-}
-
-.auth-container {
+#auth-container.container{
   max-width: 500px;
+  width: 100%;
   margin: 0 auto;
-  padding: 1rem;
 
 
 
-  ion-segment-button{
-    @media (prefers-color-scheme: dark) {
-      --background: #202020;
-    }
-  }
+  
 
-  ion-item {
 
-    --padding-start: 0;
-    --inner-padding-end: 0;
-    --min-height: auto;
-    --background: transparent;
-    --border-color: transparent;
-    margin-bottom: 16px;
-
-    &::part(native) {
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 0;
-    }
-
-    // Special handling for datetime item
-    &.datetime-item {
-      &::part(native) {
-        flex-direction: row;
-        align-items: center;
-      }
-
-      ion-label {
-        margin: 0 16px 0 4px;
-        padding: 0;
-      }
-    }
-
-    ion-label {
-      --color: var(--ion-text-color);
-      margin: 0 0 8px 0;
-      padding-left: 4px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      display: block;
-      white-space: nowrap;
-      width: 100%;
-    }
-
-    ion-input {
-
-      @media (prefers-color-scheme: dark) {
-        --background: #575757;
-      }
-      --padding-start: 12px;
-      --padding-end: 12px;
-      --background: #e4e4e4;
-      --border-radius: 8px;
-      width: 100%;
-      min-height: 44px;
-      border-radius: 8px;
-    }
-
-    ion-select {
-      --padding-start: 12px;
-      --padding-end: 12px;
-      --background: var(--ion-color-light);
-      width: 100%;
-      min-height: 44px;
-      border-radius: 8px;
-    }
-
-    &.ion-invalid.ion-dirty {
-      ion-input, ion-select, ion-datetime-button {
-        --background: rgba(var(--ion-color-danger-rgb), 0.1);
-      }
-    }
-  }
-
-  ion-note[color="danger"] {
-    display: block !important;
-    margin: -8px 0 16px 4px !important;
-    padding: 0 !important;
-    font-size: 0.875rem !important;
-  }
-
-  ion-button {
-    margin-top: 24px;
-    --border-radius: 8px;
-    min-height: 44px;
-  }
 }
+

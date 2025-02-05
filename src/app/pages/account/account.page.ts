@@ -5,20 +5,10 @@ import {
   FormBuilder,
   FormGroup,
   FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
+  ReactiveFormsModule, ValidationErrors,
   Validators
 } from '@angular/forms';
-import {
-  IonBackButton, IonButton,
-  IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-  IonContent,
-  IonHeader, IonIcon, IonInput, IonItem, IonLabel,
-  IonList, IonNote, IonText,
-  IonTitle,
-  IonToolbar
-} from '@ionic/angular/standalone';
-import {AlertController, ToastController} from "@ionic/angular";
+import {AlertController, IonicModule, ToastController} from "@ionic/angular";
 import {AuthService} from "../../shared/services/auth.service";
 import {UserDetailsDTO} from "../../models/User/DTO/User/UserDetailsDTO";
 import {Router} from "@angular/router";
@@ -35,29 +25,22 @@ import {
   personOutline, saveOutline, shieldCheckmarkOutline
 } from "ionicons/icons";
 
+type FormType = 'details' | 'changePassword';
+
+
+
 @Component({
   selector: 'app-account',
   templateUrl: './account.page.html',
   styleUrls: ['./account.page.scss'],
   standalone: true,
-  imports: [IonHeader,
-    IonContent,
-    IonTitle,
-    IonToolbar,
-    CommonModule,
-    FormsModule,
-    IonButtons,
-    IonBackButton,
-    IonList,
-    IonLabel,
-    IonItem,
-    IonInput,
-    IonButton, ReactiveFormsModule, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, IonText],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule],
   providers: [DatePipe]
 })
 
 export class AccountPage implements OnInit {
 
+  public currentForm : FormType = 'details';
   public updateForm: FormGroup;
   public changePasswordForm: FormGroup;
 
@@ -242,14 +225,21 @@ export class AccountPage implements OnInit {
     return String(string).charAt(0).toUpperCase() + String(string).slice(1);
   }
 
-  getFieldError(fieldName : string, form : FormGroup) : string {
+  getFieldError(fieldName : string) : string {
+    const form = this.currentForm === 'details' ? this.updateForm : this.changePasswordForm;
     const control = form.get(fieldName);
+
+    if(fieldName === 'newPassword'){
+      fieldName = 'password';
+    }
 
     if (!control?.errors || !control.dirty) return '';
 
     if (control.hasError('required')) return `${this.capitalizeFirstLetter(fieldName)} is required`;
 
-    if (control.hasError('minlength')) return `${this.capitalizeFirstLetter(fieldName)} must be at least ${control.getError('minlength').requiredLength} characters`;
+    if (control.hasError('minlength')) return `The ${fieldName} must be at least ${control.getError('minlength').requiredLength} characters`;
+
+    if (control.hasError('email')) return 'Please enter a valid email address';
 
     if (control.hasError('pattern')) {
       if (fieldName === 'newPassword') {

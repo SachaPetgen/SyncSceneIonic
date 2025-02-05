@@ -1,125 +1,135 @@
 <ion-content class="ion-padding">
-  <div class="auth-container">
+  <div class="container" id="auth-container">
     <!-- Segment Selector -->
-    <ion-segment [(ngModel)]="currentForm" class="ion-margin-bottom">
-      <ion-segment-button value="login">
+    <ion-segment [(ngModel)]="currentForm">
+      <ion-segment-button value="login" content-id="login">
         <ion-label>Login</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="register">
+      <ion-segment-button value="register" content-id="register">
         <ion-label>Register</ion-label>
       </ion-segment-button>
     </ion-segment>
-
-    <!-- Login Form -->
-    @if (currentForm === 'login') {
-      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-        <!-- Identifier Input -->
-        <ion-item [class.ion-invalid]="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty">
-          <ion-label>Email or Username</ion-label>
-          <ion-input  type="text" formControlName="identifier">
-            <ion-icon name="person-outline" slot="start"></ion-icon>
-          </ion-input>
-        </ion-item>
-        @if (loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty) {
-          <ion-note color="danger" slot="error">{{ getFieldError('identifier') }}</ion-note>
-        }
-        <!-- Password Input -->
-        <ion-item [class.ion-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.dirty">
-          <ion-label>Password</ion-label>
-          <ion-input type="password" formControlName="password">
-            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-          </ion-input>
-        </ion-item>
-        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.dirty) {
-          <ion-note color="danger" slot="error">{{ getFieldError('password') }}</ion-note>
-        }
-        <!-- Submit Button -->
-        <ion-button expand="block" type="submit" class="ion-margin-top" [disabled]="!loginForm.valid || isLoading">
-          @if (isLoading) {
-            <ion-spinner name="crescent"></ion-spinner>
-          } @else {
-            Login
-          }
-        </ion-button>
-      </form>
-    }
-
-    <!-- Register Form -->
-    @if (currentForm === 'register') {
-      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-        <!-- Username Input -->
-        <ion-item [class.ion-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.dirty">
-          <ion-label>Username</ion-label>
-          <ion-input type="text" formControlName="username"></ion-input>
-        </ion-item>
-        @if (registerForm.get('username')?.invalid && registerForm.get('username')?.dirty) {
-          <ion-note color="danger" slot="error">{{ getFieldError('username') }}</ion-note>
-        }
-        <!-- Email Input -->
-        <ion-item [class.ion-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.dirty">
-          <ion-label>Email</ion-label>
-          <ion-input type="email" formControlName="email"></ion-input>
-        </ion-item>
-        @if (registerForm.get('email')?.invalid && registerForm.get('email')?.dirty) {
-          <ion-note color="danger" slot="error">{{ getFieldError('email') }}</ion-note>
-        }
-        <!-- Password Input -->
-        <ion-item [class.ion-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.dirty">
-          <ion-label>Password</ion-label>
-          <ion-input type="password" formControlName="password"></ion-input>
-        </ion-item>
-        @if (registerForm.get('password')?.invalid && registerForm.get('password')?.dirty) {
-          <ion-note color="danger" slot="error">{{ getFieldError('password') }}</ion-note>
-        }
-        <!-- Password Confirmation -->
-        <ion-item
-          [class.ion-invalid]="registerForm.get('passwordConfirmation')?.invalid && registerForm.get('passwordConfirmation')?.dirty">
-          <ion-label>Confirm Password</ion-label>
-          <ion-input type="password" formControlName="passwordConfirmation"></ion-input>
-        </ion-item>
-        @if (registerForm.get('passwordConfirmation')?.invalid && registerForm.get('passwordConfirmation')?.dirty) {
-          <ion-note color="danger" slot="error">{{ getFieldError('passwordConfirmation') }}</ion-note>
-        }
-        <!-- Phone Number -->
-        <ion-item
-          [class.ion-invalid]="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.dirty">
-          <ion-label>Phone Number</ion-label>
-          <ion-input type="tel" formControlName="phoneNumber"></ion-input>
-        </ion-item>
-        @if (registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.dirty) {
-          <ion-note color="danger" slot="error">{{ getFieldError('phoneNumber') }}</ion-note>
-        }
-        <!-- Birth Date -->
-        <!-- Birth Date -->
-        <ion-item class="datetime-item" [class.ion-invalid]="registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.dirty">
-          <ion-label>Birth Date</ion-label>
-          <ion-datetime-button color="danger" datetime="datetime"></ion-datetime-button>
-        </ion-item>
-        @if (registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.dirty) {
-          <ion-note color="danger" slot="error">{{ getFieldError('birthDate') }}</ion-note>
-        }
-        <!-- Gender Selection -->
-        <ion-item [class.ion-invalid]="registerForm.get('gender')?.invalid && registerForm.get('gender')?.dirty">
-          <ion-label>Gender</ion-label>
-          <ion-select formControlName="gender" interface="action-sheet">
-            <ion-select-option [value]="Gender.Male">Male</ion-select-option>
-            <ion-select-option [value]="Gender.Female">Female</ion-select-option>
-            <ion-select-option [value]="Gender.Other">Other</ion-select-option>
-          </ion-select>
-        </ion-item>
-        @if (registerForm.get('gender')?.invalid && registerForm.get('gender')?.dirty) {
-          <ion-note color="danger" slot="error">{{ getFieldError('gender') }}</ion-note>
-        }
-        <!-- Submit Button -->
-        <ion-button expand="block" type="submit" class="ion-margin-top" [disabled]="!registerForm.valid || isLoading">
-          @if (isLoading) {
-            <ion-spinner name="crescent"></ion-spinner>
-          } @else {
-            Register
-          }
-        </ion-button>
-      </form>
-    }
+    <ion-segment-view>
+      <ion-segment-content id="login">
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+            <!-- Identifier Input -->
+            <ion-item [class.ion-invalid]="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty">
+              <ion-label>Email or Username</ion-label>
+              <ion-input  type="text" formControlName="identifier" placeholder="Enter an identifier" [clearInput]="true">
+                <ion-icon aria-hidden="true" color="dark" name="person" slot="start"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty) {
+              <ion-note color="danger" slot="error">{{ getFieldError('identifier') }}</ion-note>
+            }
+            <!-- Password Input -->
+            <ion-item [class.ion-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.dirty">
+              <ion-label>Password</ion-label>
+              <ion-input type="password" formControlName="password" [clearInput]="true">
+                <ion-icon aria-hidden="true" color="dark" name="lock-closed" slot="start"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (loginForm.get('password')?.invalid && loginForm.get('password')?.dirty) {
+              <ion-note color="danger" slot="error">{{ getFieldError('password') }}</ion-note>
+            }
+            <!-- Submit Button -->
+            <ion-button expand="block" type="submit" class="ion-margin-top" [disabled]="!loginForm.valid || isLoading">
+              @if (isLoading) {
+                <ion-spinner name="crescent"></ion-spinner>
+              } @else {
+                Login
+              }
+            </ion-button>
+          </form>
+      </ion-segment-content>
+      <ion-segment-content id="register">
+          <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+            <!-- Username Input -->
+            <ion-item [class.ion-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.dirty">
+              <ion-label>Username</ion-label>
+              <ion-input type="text" formControlName="username" placeholder="Enter a username" [clearInput]="true">
+                <ion-icon aria-hidden="true" name="person" slot="start"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (registerForm.get('username')?.invalid && registerForm.get('username')?.dirty) {
+              <ion-note color="danger" slot="error">{{ getFieldError('username') }}</ion-note>
+            }
+            <!-- Email Input -->
+            <ion-item [class.ion-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.dirty">
+              <ion-label>Email</ion-label>
+              <ion-input type="email" formControlName="email" placeholder="Enter an email" [clearInput]="true">
+                <ion-icon aria-hidden="true" name="mail" slot="start"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (registerForm.get('email')?.invalid && registerForm.get('email')?.dirty) {
+              <ion-note color="danger" slot="error">{{ getFieldError('email') }}</ion-note>
+            }
+            <!-- Password Input -->
+            <ion-item [class.ion-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.dirty">
+              <ion-label>Password</ion-label>
+              <ion-input type="password" formControlName="password" placeholder="Enter a password" [clearInput]="true">
+                <ion-icon color="dark" aria-hidden="true" name="key" slot="start"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (registerForm.get('password')?.invalid && registerForm.get('password')?.dirty) {
+              <ion-note color="danger" slot="error">{{ getFieldError('password') }}</ion-note>
+            }
+            <!-- Password Confirmation -->
+            <ion-item
+              [class.ion-invalid]="registerForm.get('passwordConfirmation')?.invalid && registerForm.get('passwordConfirmation')?.dirty">
+              <ion-label>Confirm Password</ion-label>
+              <ion-input type="password" formControlName="passwordConfirmation" placeholder="Confirm the password" [clearInput]="true">
+                <ion-icon aria-hidden="true" name="checkmark" slot="start"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (registerForm.get('passwordConfirmation')?.invalid && registerForm.get('passwordConfirmation')?.dirty) {
+              <ion-note color="danger" slot="error">{{ getFieldError('passwordConfirmation') }}</ion-note>
+            }
+            <!-- Phone Number -->
+            <ion-item
+              [class.ion-invalid]="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.dirty">
+              <ion-label>Phone Number</ion-label>
+              <ion-input type="tel" formControlName="phoneNumber" placeholder="Enter a phone number"[clearInput]="true">
+                <ion-icon aria-hidden="true" name="call" slot="start"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.dirty) {
+              <ion-note color="danger" slot="error">{{ getFieldError('phoneNumber') }}</ion-note>
+            }
+            <!-- Birth Date -->
+            <!-- Birth Date -->
+            <ion-item class="center-item" [class.ion-invalid]="registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.dirty">
+              <ion-label>Birth Date</ion-label>
+              <ion-datetime-button datetime="datetime"></ion-datetime-button>
+            </ion-item>
+            @if (registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.dirty) {
+              <ion-note color="danger" slot="error">{{ getFieldError('birthDate') }}</ion-note>
+            }
+            <!-- Gender Selection -->
+            <ion-item class="center-item" [class.ion-invalid]="registerForm.get('gender')?.invalid && registerForm.get('gender')?.dirty">
+              <ion-label>Gender</ion-label>
+              <div class="select-wrapper">
+                <ion-select formControlName="gender" interface="action-sheet" placeholder="Select gender" label-placement="end">
+                  <ion-select-option [value]="Gender.Male">Male</ion-select-option>
+                  <ion-select-option [value]="Gender.Female">Female</ion-select-option>
+                  <ion-select-option [value]="Gender.Other">Other</ion-select-option>
+                </ion-select>
+              </div>
+            </ion-item>
+            @if (registerForm.get('gender')?.invalid && registerForm.get('gender')?.dirty) {
+              <ion-note color="danger" slot="error">{{ getFieldError('gender') }}</ion-note>
+            }
+            <!-- Submit Button -->
+            <ion-button expand="block" type="submit" class="ion-margin-top" [disabled]="!registerForm.valid || isLoading">
+              @if (isLoading) {
+                <ion-spinner name="crescent"></ion-spinner>
+              } @else {
+                Register
+              }
+            </ion-button>
+          </form>
+      </ion-segment-content>
+    </ion-segment-view>
 
     <ion-modal [keepContentsMounted]="true">
       <ng-template>

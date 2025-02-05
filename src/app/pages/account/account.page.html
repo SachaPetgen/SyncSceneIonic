@@ -9,145 +9,142 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  @if(user$ | async; as user){
+  <div class="container" id="account-container">
 
-    <!-- Profile Section -->
-    <form [formGroup]="updateForm" (ngSubmit)="onUpdate()">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Personal Information</ion-card-title>
-        </ion-card-header>
+      <ion-segment [(ngModel)]="currentForm">
+        <ion-segment-button value="details" content-id="details">
+          <ion-label>Details</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="changePassword" content-id="changePassword">
+          <ion-label>Change password</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+      <ion-segment-view>
+        <ion-segment-content id="details">
+          <!-- Profile Section -->
+          @if (user$ | async; as user) {
+            <form [formGroup]="updateForm" (ngSubmit)="onUpdate()">
+              <ion-item>
+                <ion-label position="stacked">Username</ion-label>
+                <ion-input formControlName="username" placeholder="Enter a username" [clearInput]="true">
+                  <ion-icon aria-hidden="true" name="person-outline" slot="start"></ion-icon>
+                </ion-input>
+              </ion-item>
+              @if(this.updateForm.get("username")?.invalid && this.updateForm.get("username")?.dirty) {
+                <ion-note color="danger" slot="error">{{ getFieldError("username") }}</ion-note>
+              }
 
-        <ion-card-content>
-          <ion-list>
-            <ion-item>
-              <ion-icon name="person-outline" slot="start"></ion-icon>
-              <ion-label position="stacked">Username</ion-label>
-              <ion-input formControlName="username" placeholder="Enter username"></ion-input>
-              <div class="error-container">
-                @if(updateForm.get('username')?.invalid && updateForm.get('username')?.dirty) {
-                  <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("username", this.updateForm) }}</small>
-                  </ion-text>
-                }
-              </div>
-            </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Email</ion-label>
+                <ion-input formControlName="email" type="email" placeholder="Enter an email" [clearInput]="true">
+                  <ion-icon aria-hidden="true" name="mail-outline" slot="start"></ion-icon>
+                </ion-input>
+              </ion-item>
+              @if(this.updateForm.get("email")?.invalid && this.updateForm.get("email")?.dirty) {
+                <ion-note color="danger" slot="error">{{ getFieldError("email") }}</ion-note>
+              }
 
-            <ion-item>
-              <ion-icon name="mail-outline" slot="start"></ion-icon>
-              <ion-label position="stacked">Email</ion-label>
-              <ion-input formControlName="email" type="email" placeholder="Enter email"></ion-input>
-              <div class="error-container">
-                @if(updateForm.get('email')?.invalid && updateForm.get('email')?.dirty) {
-                  <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("email", this.updateForm) }}</small>
-                  </ion-text>
-                }
-              </div>
-            </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Phone number</ion-label>
+                <ion-input formControlName="phoneNumber" type="tel" placeholder="Enter a phone number" [clearInput]="true">
+                  <ion-icon aria-hidden="true" name="call-outline" slot="start"></ion-icon>
+                </ion-input>
+              </ion-item>
+              @if(this.updateForm.get("phoneNumber")?.invalid && this.updateForm.get("phoneNumber")?.dirty) {
+                <ion-note color="danger" slot="error">{{ getFieldError("phoneNumber") }}</ion-note>
+              }
+              <ion-item>
+                <ion-label position="stacked">Gender</ion-label>
+                <ion-input formControlName="gender" readonly>
+                  <ion-icon aria-hidden="true" name="people-outline" slot="start"></ion-icon>
+                  <ion-icon aria-hidden="true" name="lock-closed-outline" slot="end"></ion-icon>
+                </ion-input>
+              </ion-item>
 
-            <ion-item>
-              <ion-icon name="call-outline" slot="start"></ion-icon>
-              <ion-label position="stacked">Phone number</ion-label>
-              <ion-input formControlName="phoneNumber" type="tel" placeholder="Enter phone number"></ion-input>
-              <div class="error-container">
-                @if(updateForm.get('phoneNumber')?.invalid && updateForm.get('phoneNumber')?.dirty) {
-                  <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("phoneNumber", this.updateForm) }}</small>
-                  </ion-text>
-                }
-              </div>
-            </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Role</ion-label>
+                <ion-input formControlName="role" readonly>
+                  <ion-icon aria-hidden="true" name="briefcase-outline" slot="start"></ion-icon>
+                  <ion-icon aria-hidden="true" name="lock-closed-outline" slot="end"></ion-icon>
+                </ion-input>
+              </ion-item>
 
-            <ion-item>
-              <ion-icon name="people-outline" slot="start"></ion-icon>
-              <ion-label position="stacked">Gender</ion-label>
-              <ion-input formControlName="gender" readonly></ion-input>
-            </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Birth Date</ion-label>
+                <ion-input formControlName="birthDate" readonly>
+                  <ion-icon aria-hidden="true" name="calendar-outline" slot="start"></ion-icon>
+                  <ion-icon aria-hidden="true" name="lock-closed-outline" slot="end"></ion-icon>
+                </ion-input>
+              </ion-item>
 
-            <ion-item>
-              <ion-icon name="briefcase-outline" slot="start"></ion-icon>
-              <ion-label position="stacked">Role</ion-label>
-              <ion-input formControlName="role" readonly></ion-input>
-            </ion-item>
+            <ion-button type="submit" expand="block" class="account-details-button" color="warning"
+                        [disabled]="!updateForm.valid || isUpdateFormPristine">
+              <ion-icon name="save-outline" slot="start"></ion-icon>
+              Save Changes
+            </ion-button>
+          </form>
 
-            <ion-item>
-              <ion-icon name="calendar-outline" slot="start"></ion-icon>
-              <ion-label position="stacked">Birth Date</ion-label>
-              <ion-input formControlName="birthDate" readonly></ion-input>
-            </ion-item>
-          </ion-list>
+            <ion-button expand="block" (click)="logout()" color="danger" class="ion-margin-top">
+              <ion-icon name="log-out-outline" slot="start"></ion-icon>
+              Logout
+            </ion-button>
+          }
 
-          <ion-button type="submit" expand="block" class="ion-margin" [disabled]="!updateForm.valid || isUpdateFormPristine">
-            <ion-icon name="save-outline" slot="start"></ion-icon>
-            Save Changes
-          </ion-button>
-        </ion-card-content>
-      </ion-card>
-    </form>
+        </ion-segment-content>
 
-    <!-- Security Section -->
-    <ion-card class="ion-margin-top">
-      <ion-card-header>
-        <ion-card-title>Security Settings</ion-card-title>
-      </ion-card-header>
+          <ion-segment-content id="changePassword">
 
-      <ion-card-content>
-        <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
-          <ion-list>
-            <ion-item>
-              <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-              <ion-label position="stacked">Current Password</ion-label>
-              <ion-input formControlName="oldPassword" type="password" placeholder="Enter current password"></ion-input>
-              <div class="error-container">
-                @if(changePasswordForm.get('oldPassword')?.invalid && changePasswordForm.get('oldPassword')?.dirty) {
-                  <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("oldPassword", this.changePasswordForm) }}</small>
-                  </ion-text>
-                }
-              </div>
-            </ion-item>
+            @if (user$ | async; as user) {
 
-            <ion-item>
-              <ion-icon name="key-outline" slot="start"></ion-icon>
-              <ion-label position="stacked">New Password</ion-label>
-              <ion-input formControlName="newPassword" type="password" placeholder="Enter new password"></ion-input>
-              <div class="error-container">
-                @if(changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.dirty) {
-                  <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("newPassword", this.changePasswordForm) }}</small>
-                  </ion-text>
-                }
-              </div>
-            </ion-item>
+              <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
 
-            <ion-item>
-              <ion-icon name="checkmark-outline" slot="start"></ion-icon>
-              <ion-label position="stacked">Confirm New Password</ion-label>
-              <ion-input formControlName="newPasswordConfirmation" type="password" placeholder="Confirm new password"></ion-input>
-              <div class="error-container">
-                @if(changePasswordForm.get('newPasswordConfirmation')?.invalid && changePasswordForm.get('newPasswordConfirmation')?.dirty) {
-                  <ion-text color="danger" class="error-message">
-                    <small>{{ getFieldError("newPasswordConfirmation", this.changePasswordForm) }}</small>
-                  </ion-text>
-                }
-              </div>
-            </ion-item>
-          </ion-list>
+              <ion-item>
+                <ion-label position="stacked">Current Password</ion-label>
+                <ion-input formControlName="oldPassword" type="password" placeholder="Enter your current password" [clearInput]="true">
+                  <ion-icon aria-hidden="true" name="lock-closed-outline" slot="start"></ion-icon>
+                </ion-input>
+              </ion-item>
+              @if(this.changePasswordForm.get("oldPassword")?.invalid && this.changePasswordForm.get("oldPassword")?.dirty) {
+                <ion-note color="danger" slot="error">{{ getFieldError("oldPassword") }}</ion-note>
+              }
 
-          <ion-button type="submit" expand="block" class="ion-margin" color="warning"
-                      [disabled]="!changePasswordForm.valid || isPasswordFormPristine">
-            <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
-            Update Password
-          </ion-button>
-        </form>
-      </ion-card-content>
-    </ion-card>
-  }
+              <ion-item>
+                <ion-label position="stacked">New Password</ion-label>
+                <ion-input formControlName="newPassword" type="password" placeholder="Enter the new password" [clearInput]="true">
+                  <ion-icon aria-hidden="true" name="key-outline" slot="start"></ion-icon>
+                </ion-input>
+              </ion-item>
+              @if(this.changePasswordForm.get("newPassword")?.invalid && this.changePasswordForm.get("newPassword")?.dirty) {
+                <ion-note color="danger" slot="error">{{ getFieldError("newPassword") }}</ion-note>
+              }
 
-  <!-- Logout Button -->
-  <ion-button expand="block" (click)="logout()" color="danger" class="ion-margin-top">
-    <ion-icon name="log-out-outline" slot="start"></ion-icon>
-    Logout
-  </ion-button>
+              <ion-item>
+                <ion-label position="stacked">Confirm New Password</ion-label>
+                <ion-input formControlName="newPasswordConfirmation" type="password" placeholder="Confirm the new password" [clearInput]="true">
+                  <ion-icon aria-hidden="true" name="checkmark-outline" slot="start"></ion-icon>
+                </ion-input>
+              </ion-item>
+              @if(this.changePasswordForm.get("newPasswordConfirmation")?.invalid && this.changePasswordForm.get("newPasswordConfirmation")?.dirty) {
+                <ion-note color="danger" slot="error">{{ getFieldError("newPasswordConfirmation") }}</ion-note>
+              }
+
+
+              <ion-button type="submit" expand="block" color="warning"
+                          [disabled]="!changePasswordForm.valid || isPasswordFormPristine">
+                <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+                Update Password
+              </ion-button>
+            </form>
+
+              <ion-button expand="block" (click)="logout()" color="danger" class="ion-margin-top-4">
+                <ion-icon name="log-out-outline" slot="start"></ion-icon>
+                Logout
+              </ion-button>
+
+            }
+          </ion-segment-content>
+
+
+        </ion-segment-view>
+  </div>
 </ion-content>

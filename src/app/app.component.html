@@ -1,24 +1,24 @@
-<ion-app>
+<ion-app [class.ios]="true">
   <ion-router-outlet></ion-router-outlet>
   <ion-tabs>
-    <ion-tab-bar>
+    <ion-tab-bar color="dark">
       <ion-tab-button routerLink="/feed">
-        <ion-icon name="home-outline"></ion-icon>
+        <ion-icon [name]="router.url === '/feed' ? 'newspaper' : 'newspaper-outline'"></ion-icon>
         <ion-label>Feed</ion-label>
       </ion-tab-button>
       <ion-tab-button routerLink="/events">
-        <ion-icon name="musical-notes-outline"></ion-icon>
+        <ion-icon [name]="router.url === '/events' ? 'musical-notes' : 'musical-notes-outline'"></ion-icon>
         <ion-label>Events</ion-label>
       </ion-tab-button>
 
       @if (isLoggedIn$ | async){
         <ion-tab-button routerLink="/account">
-          <ion-icon name="people"></ion-icon>
+          <ion-icon [name]="router.url === '/account' ? 'people' : 'people-outline'"></ion-icon>
           <ion-label>Account</ion-label>
         </ion-tab-button>
       } @else {
         <ion-tab-button routerLink="/auth">
-          <ion-icon name="people-outline"></ion-icon>
+          <ion-icon [name]="router.url === '/auth' ? 'log-in' : 'log-in-outline'"></ion-icon>
           <ion-label>Login</ion-label>
         </ion-tab-button>
       }

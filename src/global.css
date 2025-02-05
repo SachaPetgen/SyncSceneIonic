@@ -1,0 +1,150 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import '@ionic/angular/css/palettes/dark.system.css';
+ion-segment {
+  --background: var(--ion-color-dark-shade);
+  margin-bottom: 35px;
+}
+ion-segment ion-segment-button {
+  color: var(--ion-color-dark-contrast);
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 13px 0;
+}
+ion-segment ion-segment-button::part(indicator) {
+  border-radius: 30px;
+  padding: 1px 3px;
+}
+ion-segment ion-segment-button.segment-button-checked {
+  color: var(--ion-color-dark-contrast);
+}
+ion-segment ion-segment-button::part(indicator-background) {
+  background-color: var(--ion-color-dark-tint);
+}
+
+ion-toolbar {
+  --opacity: 1 !important;
+  --background: var(--ion-color-dark);
+  --color: var(--ion-color-dark-contrast);
+}
+
+form ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: auto;
+  --border-color: transparent;
+  margin-bottom: 16px;
+}
+form ion-item::part(native) {
+  background: var(--ion-color-light);
+  flex-direction: column;
+  padding: 0;
+}
+form ion-item ion-label {
+  margin: 0 0 8px 0;
+  padding-left: 4px;
+  font-size: 0.95rem;
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+}
+form ion-item.ion-invalid.ion-dirty ion-input, form ion-item.ion-invalid.ion-dirty ion-select, form ion-item.ion-invalid.ion-dirty ion-datetime-button {
+  background: rgba(var(--ion-color-danger-rgb), 0.1);
+}
+form ion-item ion-input {
+  background: var(--ion-color-light-shade);
+  --padding-start: 12px !important;
+  --padding-end: 12px !important;
+  width: 100% !important;
+  min-height: 44px !important;
+  border-radius: 8px !important;
+}
+form ion-item ion-input::part(native) {
+  display: flex;
+  align-items: center;
+}
+form ion-item ion-input ion-icon[slot=start] {
+  margin-right: 16px;
+}
+form ion-item ion-input ion-icon[slot=end] {
+  margin-right: 8px;
+}
+form ion-item ion-input[readonly] {
+  opacity: 1 !important;
+}
+form ion-item.center-item {
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --padding-start: 12px;
+  --padding-end: 12px;
+}
+form ion-item.center-item::part(native) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 8px 0;
+}
+form ion-item.center-item ion-label {
+  padding: 0;
+  margin: 0;
+}
+form ion-item.center-item ion-datetime-button {
+  margin: 0;
+  min-width: 120px;
+}
+form ion-item.center-item ion-datetime-button::part(native):hover {
+  color: var(--ion-color-primary);
+}
+form ion-item.center-item .select-wrapper {
+  background: var(--ion-color-light-shade);
+  border-radius: 8px;
+  padding: 0 12px;
+}
+form ion-item.center-item .select-wrapper:hover {
+  color: var(--ion-color-primary);
+}
+
+ion-note[color=danger] {
+  display: block !important;
+  margin: -8px 0 16px 4px !important;
+  padding: 0 !important;
+  font-size: 0.875rem !important;
+}
+
+ion-button {
+  margin-top: 24px;
+  border-radius: 30px;
+  min-height: 44px;
+}
+
+/*# sourceMappingURL=global.css.map */

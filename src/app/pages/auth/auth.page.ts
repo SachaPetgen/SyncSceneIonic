@@ -3,7 +3,6 @@ import {CommonModule, formatDate} from '@angular/common';
 import {
   AbstractControl,
   FormBuilder,
-  FormControlStatus,
   FormGroup,
   FormsModule,
   ReactiveFormsModule, ValidationErrors,
@@ -17,6 +16,8 @@ import { catchError, finalize, Observable, throwError } from "rxjs";
 import { UserRegisterDTO } from "../../models/User/DTO/User/UserRegisterDTO";
 import { UserService } from "../../shared/services/user.service";
 import { Router } from "@angular/router";
+import { addIcons } from "ionicons";
+import {call, checkmark, key, lockClosed, mail, person} from "ionicons/icons";
 
 type FormType = 'login' | 'register';
 
@@ -59,7 +60,11 @@ export class AuthPage {
     private readonly router: Router,
     private readonly toastController: ToastController,
     private readonly modalController: ModalController
+
   ) {
+
+    addIcons({person, lockClosed, mail, key, checkmark, call });
+
     this.initializeForms();
   }
   private initializeForms() {
@@ -148,14 +153,6 @@ export class AuthPage {
     return throwError(() => error);
   }
 
-  private getErrorMessage(error: any): string {
-    if (error?.error?.message) return error.error.message;
-    if (error?.message) return error.message;
-    return this.currentForm === 'login'
-      ? 'Invalid login information!'
-      : 'Invalid registration information!';
-  }
-
   private showValidationErrors(form: FormGroup): void {
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);
@@ -203,10 +200,6 @@ export class AuthPage {
     await toast.present();
   }
 
-  get currentFormGroup(): FormGroup {
-    return this.currentForm === 'login' ? this.loginForm : this.registerForm;
-  }
-
   capitalizeFirstLetter(string : string) {
     return String(string).charAt(0).toUpperCase() + String(string).slice(1);
   }
@@ -219,7 +212,7 @@ export class AuthPage {
 
     if (control.hasError('required')) return `${this.capitalizeFirstLetter(fieldName)} is required`;
     if (control.hasError('email')) return 'Please enter a valid email address';
-    if (control.hasError('minlength')) return `${this.capitalizeFirstLetter(fieldName)} must be at least ${control.getError('minlength').requiredLength} characters`;
+    if (control.hasError('minlength')) return `The ${fieldName} must be at least ${control.getError('minlength').requiredLength} characters`;
     if (control.hasError('pattern')) {
       if (fieldName === 'password') {
         return 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
