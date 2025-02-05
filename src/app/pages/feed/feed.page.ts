@@ -16,9 +16,9 @@ import {
   styleUrls: ['feed.page.scss'],
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonAvatar, IonItem, IonInfiniteScroll, IonInfiniteScrollContent, IonLabel],
 })
+
 export class FeedPage {
   @ViewChild(IonContent, { static: false }) content!: IonContent;
-
 
   private maxItems = 100;
   items: string[] = [];
@@ -29,18 +29,17 @@ export class FeedPage {
   }
 
   onIonInfinite($event: CustomEvent<void>) {
+
     if (this.items.length >= this.maxItems) {
       ($event.target as HTMLIonInfiniteScrollElement).complete();
       ($event.target as HTMLIonInfiniteScrollElement).disabled = true;
       return;
     }
-    setTimeout(() => {
 
+    setTimeout(() => {
       this.items = Array.from({length: 20}, (v, k) => `Item ` + Math.floor(Math.random() * 10));
       ($event.target as HTMLIonInfiniteScrollElement).complete();
 
     }, 1000);
   }
-
-
 }

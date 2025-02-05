@@ -5,6 +5,14 @@
 
     ion-item {
 
+      --padding-start: 8px;
+      --padding-end: 8px;
+      --padding-top: 12px;
+      --padding-bottom: 12px;
+
+      border-radius: 2px;
+      margin: 16px 5px;
+
       &::part(native) {
 
         background:
@@ -21,13 +29,6 @@
           box-shadow: 0 -3px 5px 1px var(--ion-color-medium-shade);
 
       }
-      --padding-start: 8px;
-      --padding-end: 8px;
-      --padding-top: 12px;
-      --padding-bottom: 12px;
-
-      border-radius: 2px;
-      margin: 16px 5px;
 
       ion-avatar {
         width: 48px;
@@ -44,13 +45,14 @@
         h2 {
           font-size: 1.1rem;
           font-weight: 600;
+          margin-bottom: 4px;
+
           @media (prefers-color-scheme: light) {
             color: var(--ion-color-dark);
           }
           @media (prefers-color-scheme: dark) {
             color: var(--ion-color-medium-dark);
           }
-          margin-bottom: 4px;
         }
 
         p {

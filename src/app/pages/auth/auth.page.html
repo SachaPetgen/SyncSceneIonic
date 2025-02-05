@@ -16,7 +16,7 @@
             <ion-item [class.ion-invalid]="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty">
               <ion-label>Email or Username</ion-label>
               <ion-input  type="text" formControlName="identifier" placeholder="Enter an identifier" [clearInput]="true">
-                <ion-icon aria-hidden="true" color="dark" name="person" slot="start"></ion-icon>
+                <ion-icon aria-hidden="true" name="person" slot="start"></ion-icon>
               </ion-input>
             </ion-item>
             @if (loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.dirty) {
@@ -26,7 +26,7 @@
             <ion-item [class.ion-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.dirty">
               <ion-label>Password</ion-label>
               <ion-input type="password" formControlName="password" [clearInput]="true">
-                <ion-icon aria-hidden="true" color="dark" name="lock-closed" slot="start"></ion-icon>
+                <ion-icon aria-hidden="true" name="lock-closed" slot="start"></ion-icon>
               </ion-input>
             </ion-item>
             @if (loginForm.get('password')?.invalid && loginForm.get('password')?.dirty) {
@@ -68,7 +68,7 @@
             <ion-item [class.ion-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.dirty">
               <ion-label>Password</ion-label>
               <ion-input type="password" formControlName="password" placeholder="Enter a password" [clearInput]="true">
-                <ion-icon color="dark" aria-hidden="true" name="key" slot="start"></ion-icon>
+                <ion-icon aria-hidden="true" name="key" slot="start"></ion-icon>
               </ion-input>
             </ion-item>
             @if (registerForm.get('password')?.invalid && registerForm.get('password')?.dirty) {
